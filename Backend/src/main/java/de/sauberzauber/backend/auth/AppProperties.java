@@ -11,8 +11,8 @@ public record AppProperties(List<String> users, String rpId, String origin, Stri
 	public AppProperties {
 		users = (users == null) ? List.of()
 				: users.stream().map(String::trim).filter(StringUtils::hasText).distinct().toList();
-		if (users.isEmpty() || users.size() > 2) {
-			throw new IllegalArgumentException("APP_USERS must contain one or two user names");
+		if (users.size() != 2) {
+			throw new IllegalArgumentException("APP_USERS must contain exactly two user names");
 		}
 		if (!StringUtils.hasText(rpId) || !StringUtils.hasText(origin)) {
 			throw new IllegalArgumentException("APP_RP_ID and APP_ORIGIN must be set");
