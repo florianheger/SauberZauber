@@ -8,9 +8,21 @@ spring:
 
 server:
   forward-headers-strategy: native
+  tomcat:
+    use-relative-redirects: true
+  servlet:
+    session:
+      cookie:
+        same-site: lax
 
 management:
   endpoints:
     web:
       exposure:
         include: health
+
+app:
+  users: ${APP_USERS:}
+  rp-id: ${APP_RP_ID:localhost}
+  origin: ${APP_ORIGIN:http://localhost:8080}
+  reenroll: ${APP_REENROLL:}

@@ -21,6 +21,10 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      APP_USERS: ${APP_USERS}
+      APP_RP_ID: ${APP_RP_ID}
+      APP_ORIGIN: ${APP_ORIGIN}
+      APP_REENROLL: ${APP_REENROLL:-}
     depends_on:
       db:
         condition: service_healthy

@@ -1,0 +1,7 @@
+<main>
+  <h1>SauberZauber</h1>
+  <button type="button" (click)="login()" [disabled]="busy()">Mit Passkey anmelden</button>
+  @if (error(); as message) {
+    <p class="error" role="alert">{{ message }}</p>
+  }
+</main>

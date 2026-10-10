@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-The core skeleton exists; features from `requirements/` are not implemented yet. Currently there is only a smoke-test endpoint `GET /api/hello` shown on the Angular start page.
+Implemented: core skeleton and the login feature (passkeys, enrollment links; code in `Backend/.../auth`, `Frontend/src/app/auth`). Not yet implemented: tasks, task done, statistics.
 
 - `Backend/` — Spring Boot (Maven, Java 25), package `de.sauberzauber.backend`
 - `Frontend/` — Angular (standalone, vitest), served by nginx in Docker; nginx proxies `/api/` to the backend
@@ -12,7 +12,9 @@ The core skeleton exists; features from `requirements/` are not implemented yet.
 
 Commands:
 - Run everything: `cp .env.example .env && docker compose up --build` → http://localhost:8080
-- Backend tests (no local JDK needed): `docker run --rm -v "$PWD/Backend":/app -w /app eclipse-temurin:25-jdk ./mvnw -B test`
+- Enrollment links (first passkey per user): `docker compose logs backend | grep Enrollment`
+- Backend tests (no local JDK needed; integration tests use Testcontainers via the Docker socket): `docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -e TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal -v "$PWD/Backend":/app -v sauberzauber-m2:/root/.m2 -w /app eclipse-temurin:25-jdk ./mvnw -B test`
+- New backend paths that the browser calls directly must also be added to the proxy rules in `Frontend/nginx.conf` and `Frontend/proxy.conf.json`
 - Frontend: `cd Frontend && npm start` (proxies `/api` to `localhost:8080`), `npm test`, `npm run build`
 
 Requirements:
@@ -43,7 +45,7 @@ The app is internet-facing, so authentication must use Spring Security's built-i
 
 - Passkey (WebAuthn) login only, via `spring-security-webauthn` (`http.webAuthn(...)` with `rpId`/`allowedOrigins` from env). Endpoints: `POST /webauthn/authenticate/options`, `POST /login/webauthn`. Users may have multiple passkeys.
 - Persist credentials with `JdbcPublicKeyCredentialUserEntityRepository` + `JdbcUserCredentialRepository`; their tables are created via Flyway.
-- Session-based auth; CSRF via `CookieCsrfTokenRepository.withHttpOnlyFalse()`, Angular sends `X-XSRF-TOKEN`.
+- Session-based auth; CSRF via `CookieCsrfTokenRepository.withHttpOnlyFalse()` with a plain `CsrfTokenRequestAttributeHandler`, Angular sends `X-XSRF-TOKEN`. Do **not** use `csrf.spa()`: Spring's default `/webauthn/register` page sends a masked token in that header, which `spa()` rejects with 403 (covered by `SecurityConfigTest`).
 - Form login, HTTP basic, one-time-token login, and any password mechanism must be disabled.
 - No registration UI. Users come from env `APP_USERS` (e.g. `florian,ronja`) and are created idempotently on startup.
 - **Enrollment**: on startup, each user without a credential gets a 32-byte `SecureRandom` base64url token; only its SHA-256 hash + 24h expiry is stored in `enrollment_token` (old tokens invalidated), and the link `${APP_ORIGIN}/enroll?token=…` is logged. `GET /enroll` does a constant-time hash compare + expiry check, deletes the token, creates an authenticated session (save context, change session ID), and redirects to Spring's `/webauthn/register`. Invalid/expired/reused → 403. `APP_REENROLL=<user>` forces a new link on next startup.
