@@ -4,8 +4,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-SauberZauber is currently **specification-only**: the repo contains no application code yet, only requirement documents under `requirements/`. There are no build, lint, or test commands yet — update this file with them once the backend/frontend projects are scaffolded.
+The core skeleton exists; features from `requirements/` are not implemented yet. Currently there is only a smoke-test endpoint `GET /api/hello` shown on the Angular start page.
 
+- `Backend/` — Spring Boot (Maven, Java 25), package `de.sauberzauber.backend`
+- `Frontend/` — Angular (standalone, vitest), served by nginx in Docker; nginx proxies `/api/` to the backend
+- `docker-compose.yml` — `db` (Postgres 18), `backend`, `frontend` (only port exposed: `8080`)
+
+Commands:
+- Run everything: `cp .env.example .env && docker compose up --build` → http://localhost:8080
+- Backend tests (no local JDK needed): `docker run --rm -v "$PWD/Backend":/app -w /app eclipse-temurin:25-jdk ./mvnw -B test`
+- Frontend: `cd Frontend && npm start` (proxies `/api` to `localhost:8080`), `npm test`, `npm run build`
+
+Requirements:
 - `requirements/description.md` — overall purpose and tech stack
 - `requirements/featues/*.md` — one file per feature (note: the directory name is spelled `featues`)
 
@@ -21,7 +31,7 @@ Features:
 - **Statistics**: separate page showing, per task, how many times each user did it.
 - **Login**: passkey-only (see below).
 
-## Planned architecture
+## Architecture
 
 - **Deployment**: everything runs via `docker compose`, served over HTTPS on a real public domain. Angular and the API share one origin behind a reverse proxy, so no CORS configuration.
 - **Backend**: Spring Boot 4 / Spring Security 7.x, PostgreSQL (persistent volume), Flyway migrations.

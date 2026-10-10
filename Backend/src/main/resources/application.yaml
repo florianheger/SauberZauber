@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: backend
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/sauberzauber}
+    username: ${SPRING_DATASOURCE_USERNAME:sauberzauber}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+
+server:
+  forward-headers-strategy: native
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
