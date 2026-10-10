@@ -24,7 +24,7 @@ describe('authGuard', () => {
 
   it('allows navigation when logged in', async () => {
     const result = runGuard();
-    httpTesting.expectOne('/api/me').flush({ username: 'florian' });
+    httpTesting.expectOne('/api/me').flush({ username: 'alex' });
     expect(await result).toBe(true);
   });
 

@@ -47,7 +47,7 @@ The app is internet-facing, so authentication must use Spring Security's built-i
 - Persist credentials with `JdbcPublicKeyCredentialUserEntityRepository` + `JdbcUserCredentialRepository`; their tables are created via Flyway.
 - Session-based auth; CSRF via `CookieCsrfTokenRepository.withHttpOnlyFalse()` with a plain `CsrfTokenRequestAttributeHandler`, Angular sends `X-XSRF-TOKEN`. Do **not** use `csrf.spa()`: Spring's default `/webauthn/register` page sends a masked token in that header, which `spa()` rejects with 403 (covered by `SecurityConfigTest`).
 - Form login, HTTP basic, one-time-token login, and any password mechanism must be disabled.
-- No registration UI. Users come from env `APP_USERS` (e.g. `florian,ronja`) and are created idempotently on startup.
+- No registration UI. Users come from env `APP_USERS` (e.g. `alex,sam`) and are created idempotently on startup.
 - **Enrollment**: on startup, each user without a credential gets a 32-byte `SecureRandom` base64url token; only its SHA-256 hash + 24h expiry is stored in `enrollment_token` (old tokens invalidated), and the link `${APP_ORIGIN}/enroll?token=…` is logged. `GET /enroll` does a constant-time hash compare + expiry check, deletes the token, creates an authenticated session (save context, change session ID), and redirects to Spring's `/webauthn/register`. Invalid/expired/reused → 403. `APP_REENROLL=<user>` forces a new link on next startup.
 - Angular: single "Sign in with passkey" login page, route guard on `GET /api/me` (401 → login), logout via `POST /logout`.
 

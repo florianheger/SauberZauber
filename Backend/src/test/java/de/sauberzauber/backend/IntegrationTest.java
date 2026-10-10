@@ -9,10 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 
-/** Full application context against a Postgres Testcontainer, with users florian and ronja. */
+/** Full application context against a Postgres Testcontainer, with users alex and sam. */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@SpringBootTest(properties = { "app.users=florian,ronja", "app.rp-id=localhost", "app.origin=http://localhost:8080",
+@SpringBootTest(properties = { "app.users=alex,sam", "app.rp-id=localhost", "app.origin=http://localhost:8080",
 		"app.reenroll=" })
 @AutoConfigureMockMvc
 @Import(TestcontainersConfiguration.class)

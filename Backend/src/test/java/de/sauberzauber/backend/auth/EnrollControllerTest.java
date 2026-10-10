@@ -36,7 +36,7 @@ class EnrollControllerTest {
 
 	@Test
 	void validTokenAuthenticatesAndRedirectsToRegistration() throws Exception {
-		String token = this.enrollment.issue("florian");
+		String token = this.enrollment.issue("alex");
 		MockHttpSession session = new MockHttpSession();
 		String originalSessionId = session.getId();
 
@@ -50,12 +50,12 @@ class EnrollControllerTest {
 		SecurityContext context = (SecurityContext) resultSession
 			.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
 		assertThat(context.getAuthentication().isAuthenticated()).isTrue();
-		assertThat(context.getAuthentication().getName()).isEqualTo("florian");
+		assertThat(context.getAuthentication().getName()).isEqualTo("alex");
 	}
 
 	@Test
 	void reusedTokenIsForbidden() throws Exception {
-		String token = this.enrollment.issue("florian");
+		String token = this.enrollment.issue("alex");
 		this.mockMvc.perform(get("/enroll").param("token", token)).andExpect(status().isFound());
 
 		this.mockMvc.perform(get("/enroll").param("token", token)).andExpect(status().isForbidden());
@@ -63,7 +63,7 @@ class EnrollControllerTest {
 
 	@Test
 	void expiredTokenIsForbidden() throws Exception {
-		String token = this.enrollment.issue("florian");
+		String token = this.enrollment.issue("alex");
 		this.jdbc.sql("update enrollment_token set expires_at = now() - interval '1 second'").update();
 
 		this.mockMvc.perform(get("/enroll").param("token", token)).andExpect(status().isForbidden());

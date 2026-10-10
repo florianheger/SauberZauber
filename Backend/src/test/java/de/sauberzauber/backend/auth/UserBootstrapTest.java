@@ -42,30 +42,30 @@ class UserBootstrapTest {
 		bootstrap(null).run(new DefaultApplicationArguments());
 
 		assertThat(this.jdbc.sql("select username from app_user order by username").query(String.class).list())
-			.containsExactly("florian", "ronja");
-		assertThat(tokenUsers()).containsExactly("florian", "ronja");
+			.containsExactly("alex", "sam");
+		assertThat(tokenUsers()).containsExactly("alex", "sam");
 	}
 
 	@Test
 	void userWithPasskeyGetsNoEnrollmentToken() {
-		addPasskey("florian");
+		addPasskey("alex");
 
 		bootstrap(null).run(new DefaultApplicationArguments());
 
-		assertThat(tokenUsers()).containsExactly("ronja");
+		assertThat(tokenUsers()).containsExactly("sam");
 	}
 
 	@Test
 	void reenrollForcesTokenForUserWithPasskey() {
-		addPasskey("florian");
+		addPasskey("alex");
 
-		bootstrap("florian").run(new DefaultApplicationArguments());
+		bootstrap("alex").run(new DefaultApplicationArguments());
 
-		assertThat(tokenUsers()).containsExactly("florian", "ronja");
+		assertThat(tokenUsers()).containsExactly("alex", "sam");
 	}
 
 	private UserBootstrap bootstrap(String reenroll) {
-		AppProperties props = new AppProperties(List.of("florian", "ronja"), "localhost", "http://localhost:8080",
+		AppProperties props = new AppProperties(List.of("alex", "sam"), "localhost", "http://localhost:8080",
 				reenroll);
 		return new UserBootstrap(props, this.jdbc, this.enrollment, this.userEntities, this.userCredentials);
 	}

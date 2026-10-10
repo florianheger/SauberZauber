@@ -12,7 +12,7 @@ The app will be published to the internet, so it is essential to use Spring Secu
 - Deployment: docker compose, served behind HTTPS on the real domain
 
 ## Requirements
-- Only the users from env `APP_USERS` (e.g. `florian,ronja`) exist; they are created idempotently on startup.
+- Only the users from env `APP_USERS` (e.g. `alex,sam`) exist; they are created idempotently on startup.
 - Login only via passkey (`POST /webauthn/authenticate/options`, `POST /login/webauthn`).
 - Users can hold multiple passkeys.
 

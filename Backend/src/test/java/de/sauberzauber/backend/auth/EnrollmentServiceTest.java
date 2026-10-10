@@ -27,10 +27,10 @@ class EnrollmentServiceTest {
 
 	@Test
 	void issueStoresOnlyTheHash() {
-		String token = this.enrollment.issue("florian");
+		String token = this.enrollment.issue("alex");
 
 		assertThat(Base64.getUrlDecoder().decode(token)).hasSize(32);
-		byte[] stored = this.jdbc.sql("select token_hash from enrollment_token where username = 'florian'")
+		byte[] stored = this.jdbc.sql("select token_hash from enrollment_token where username = 'alex'")
 			.query(byte[].class)
 			.single();
 		assertThat(stored).isEqualTo(EnrollmentService.hash(token)).isNotEqualTo(token.getBytes());
@@ -38,15 +38,15 @@ class EnrollmentServiceTest {
 
 	@Test
 	void validTokenCanBeConsumedOnlyOnce() {
-		String token = this.enrollment.issue("florian");
+		String token = this.enrollment.issue("alex");
 
-		assertThat(this.enrollment.consume(token)).contains("florian");
+		assertThat(this.enrollment.consume(token)).contains("alex");
 		assertThat(this.enrollment.consume(token)).isEmpty();
 	}
 
 	@Test
 	void expiredTokenIsRejected() {
-		String token = this.enrollment.issue("florian");
+		String token = this.enrollment.issue("alex");
 		this.jdbc.sql("update enrollment_token set expires_at = now() - interval '1 second'").update();
 
 		assertThat(this.enrollment.consume(token)).isEmpty();
@@ -54,16 +54,16 @@ class EnrollmentServiceTest {
 
 	@Test
 	void issuingAgainInvalidatesTheOldToken() {
-		String oldToken = this.enrollment.issue("florian");
-		String newToken = this.enrollment.issue("florian");
+		String oldToken = this.enrollment.issue("alex");
+		String newToken = this.enrollment.issue("alex");
 
 		assertThat(this.enrollment.consume(oldToken)).isEmpty();
-		assertThat(this.enrollment.consume(newToken)).contains("florian");
+		assertThat(this.enrollment.consume(newToken)).contains("alex");
 	}
 
 	@Test
 	void unknownOrMissingTokenIsRejected() {
-		this.enrollment.issue("florian");
+		this.enrollment.issue("alex");
 
 		assertThat(this.enrollment.consume("unknown")).isEmpty();
 		assertThat(this.enrollment.consume(null)).isEmpty();

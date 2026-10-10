@@ -36,29 +36,29 @@ class SecurityConfigTest {
 
 	@Test
 	void httpBasicIsRejected() throws Exception {
-		this.mockMvc.perform(get("/api/me").with(httpBasic("florian", "{disabled}")))
+		this.mockMvc.perform(get("/api/me").with(httpBasic("alex", "{disabled}")))
 			.andExpect(status().isUnauthorized())
 			.andExpect(unauthenticated());
 	}
 
 	@Test
 	void formLoginIsRejected() throws Exception {
-		this.mockMvc.perform(post("/login").param("username", "florian").param("password", "{disabled}").with(csrf()))
+		this.mockMvc.perform(post("/login").param("username", "alex").param("password", "{disabled}").with(csrf()))
 			.andExpect(status().isUnauthorized())
 			.andExpect(unauthenticated());
 	}
 
 	@Test
 	void meReturnsTheCurrentUser() throws Exception {
-		this.mockMvc.perform(get("/api/me").with(user("florian")))
+		this.mockMvc.perform(get("/api/me").with(user("alex")))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.username").value("florian"));
+			.andExpect(jsonPath("$.username").value("alex"));
 	}
 
 	@Test
 	void logoutRequiresCsrfToken() throws Exception {
-		this.mockMvc.perform(post("/logout").with(user("florian"))).andExpect(status().isForbidden());
-		this.mockMvc.perform(post("/logout").with(user("florian")).with(csrf())).andExpect(status().isOk());
+		this.mockMvc.perform(post("/logout").with(user("alex"))).andExpect(status().isForbidden());
+		this.mockMvc.perform(post("/logout").with(user("alex")).with(csrf())).andExpect(status().isOk());
 	}
 
 	@Test
@@ -68,7 +68,7 @@ class SecurityConfigTest {
 
 	@Test
 	void registrationPageCsrfTokenIsAccepted() throws Exception {
-		MvcResult page = this.mockMvc.perform(get("/webauthn/register").with(user("florian")))
+		MvcResult page = this.mockMvc.perform(get("/webauthn/register").with(user("alex")))
 			.andExpect(status().isOk())
 			.andReturn();
 		Matcher matcher = Pattern.compile("\"X-XSRF-TOKEN\" : \"([^\"]+)\"")
@@ -78,7 +78,7 @@ class SecurityConfigTest {
 		assertThat(cookie).isNotNull();
 
 		this.mockMvc
-			.perform(post("/webauthn/register/options").with(user("florian"))
+			.perform(post("/webauthn/register/options").with(user("alex"))
 				.cookie(cookie)
 				.header("X-XSRF-TOKEN", matcher.group(1)))
 			.andExpect(status().isOk());
