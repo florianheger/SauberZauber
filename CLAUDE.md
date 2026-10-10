@@ -4,11 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-Implemented: core skeleton and the login feature (passkeys, enrollment links; code in `Backend/.../auth`, `Frontend/src/app/auth`). Not yet implemented: tasks, task done, statistics.
+All features from `requirements/` are implemented: login (`Backend/.../auth`, `Frontend/src/app/auth`), tasks and completions (`Backend/.../task`, `Frontend/src/app/tasks`), statistics (`Frontend/src/app/stats`), PWA (service worker, manifest, icons).
+
+- **UI design source of truth:** `requirements/deisgn/` (Claude Design handoff; note the spelling). `README.md` has the tokens, sizes and behaviour; `SauberZauber App.dc.html` is the clickable prototype. Recreate changes from there pixel-accurately; tokens live in `Frontend/src/styles.scss` (`--p1`/`--p2` = first/second household member, `--me`/`--other` follow `data-me` on the shell).
 
 - `Backend/` — Spring Boot (Maven, Java 25), package `de.sauberzauber.backend`
 - `Frontend/` — Angular (standalone, vitest), served by nginx in Docker; nginx proxies `/api/` to the backend
-- `docker-compose.yml` — `db` (Postgres 18), `backend`, `frontend` (only port exposed: `8080`)
+- `docker-compose.yml` — `db` (Postgres 18), `backend`, `frontend` (only port exposed: `APP_PORT`, default `8080`)
 
 Commands:
 - Run everything: `cp .env.example .env && docker compose up --build` → http://localhost:8080
@@ -16,6 +18,8 @@ Commands:
 - Backend tests (no local JDK needed; integration tests use Testcontainers via the Docker socket): `docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -e TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal -v "$PWD/Backend":/app -v sauberzauber-m2:/root/.m2 -w /app eclipse-temurin:25-jdk ./mvnw -B test`
 - New backend paths that the browser calls directly must also be added to the proxy rules in `Frontend/nginx.conf` and `Frontend/proxy.conf.json`
 - Frontend: `cd Frontend && npm start` (proxies `/api` to `localhost:8080`), `npm test`, `npm run build`
+- Icons: the Material Symbols font is a self-hosted subset (`Frontend/public/fonts/`). After adding icons to `Frontend/src/app/tasks/icon-catalog.ts` (`ICON_CATALOG` or `UI_ICONS`), run `cd Frontend && npm run icons`
+- Service worker: backend navigations (`/enroll`, `/webauthn/**`, `/login/webauthn`, `/logout`, `/api/**`) are excluded in `Frontend/ngsw-config.json` `navigationUrls`; keep that list in sync with the nginx proxy rules
 
 Requirements:
 - `requirements/description.md` — overall purpose and tech stack
@@ -36,6 +40,8 @@ Features:
 ## Architecture
 
 - **Deployment**: everything runs via `docker compose`, served over HTTPS on a real public domain. Angular and the API share one origin behind a reverse proxy, so no CORS configuration.
+  - TLS is terminated by the server's existing reverse proxy, which forwards to `APP_PORT`. It must send `Host` (or `X-Forwarded-Host`), `X-Forwarded-Proto: https` and `X-Forwarded-For`; nginx passes them on and Spring then sets `Secure` cookies and correct redirects.
+  - In production `APP_RP_ID` is the domain and `APP_ORIGIN` the exact `https://` origin; passkeys registered for one origin (e.g. localhost) do not work on another.
 - **Backend**: Spring Boot 4 / Spring Security 7.x, PostgreSQL (persistent volume), Flyway migrations.
 - **Frontend**: Angular, mobile-first, responsive for phone and desktop, installable as a PWA on Android and iOS. The UI is entirely in German (all user-facing text, labels, and messages).
 
