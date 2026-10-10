@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400..700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=block">
+<style>
+body{margin:0}
+a{color:#5A3FC0}a:hover{color:#3F2A92}
+[data-theme="light"]{--bg:oklch(97.6% 0.007 80);--surface:#fff;--surface2:oklch(95.5% 0.008 80);--ink:oklch(24% 0.025 285);--muted:oklch(48% 0.02 285);--line:oklch(91.5% 0.008 80);--brand:#5A3FC0;--brand-soft:oklch(94.5% 0.035 288);--on-brand:#fff;--alex:oklch(52% 0.1 200);--alex-soft:oklch(94.5% 0.03 200);--sam:oklch(57% 0.15 40);--sam-soft:oklch(95% 0.03 45);--on-person:#fff;--danger:oklch(52% 0.19 25);--snack:oklch(26% 0.02 285);--on-snack:#fff;--snack-action:oklch(82% 0.1 288);--scrim:rgba(20,16,40,.38);--shadow:0 1px 2px rgba(30,20,60,.05),0 8px 24px rgba(30,20,60,.06)}
+[data-theme="dark"]{--bg:oklch(18% 0.018 285);--surface:oklch(23% 0.02 285);--surface2:oklch(27.5% 0.02 285);--ink:oklch(95% 0.008 80);--muted:oklch(74% 0.02 285);--line:oklch(31% 0.02 285);--brand:#B9A6FF;--brand-soft:oklch(32% 0.07 288);--on-brand:oklch(20% 0.04 288);--alex:oklch(76% 0.1 200);--alex-soft:oklch(31% 0.05 200);--sam:oklch(77% 0.12 45);--sam-soft:oklch(32% 0.06 45);--on-person:oklch(20% 0.03 285);--danger:oklch(72% 0.15 25);--snack:oklch(92% 0.01 80);--on-snack:oklch(22% 0.02 285);--snack-action:#5A3FC0;--scrim:rgba(0,0,0,.55);--shadow:none}
+[data-me="Alex"]{--me:var(--alex);--me-soft:var(--alex-soft);--other:var(--sam);--other-soft:var(--sam-soft)}
+[data-me="Sam"]{--me:var(--sam);--me-soft:var(--sam-soft);--other:var(--alex);--other-soft:var(--alex-soft)}
+</style>
+</helmet>
+<div data-theme="{{ themeName }}" data-me="{{ me }}" style="position:relative;width:100%;height:100%;min-height:0;overflow:hidden;display:flex;flex-direction:{{ L.dir }};background:var(--bg);color:var(--ink);font-family:'Figtree',system-ui,sans-serif;-webkit-tap-highlight-color:transparent">
+
+<sc-if value="{{ isPhone }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;top:0;left:0;right:0;height:54px;z-index:80;display:flex;align-items:center;justify-content:space-between;padding:0 30px 0 36px;box-sizing:border-box;pointer-events:none;color:var(--ink);background:var(--bg)">
+<span style="font-weight:600;font-size:16px">9:41</span>
+<span style="display:flex;gap:4px;align-items:center"><span class="material-symbols-rounded" style="font-size:18px;font-variation-settings:'FILL' 1">signal_cellular_alt</span><span class="material-symbols-rounded" style="font-size:18px;font-variation-settings:'FILL' 1">wifi</span><span class="material-symbols-rounded" style="font-size:22px;font-variation-settings:'FILL' 1">battery_full</span></span>
+</div>
+</sc-if>
+
+<sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ false }}">
+<nav style="width:256px;flex:none;box-sizing:border-box;padding:28px 16px;border-right:1px solid var(--line);background:var(--surface);display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:center;gap:12px;padding:0 10px 24px">
+<div style="width:40px;height:40px;border-radius:12px;background:#5A3FC0;display:flex;align-items:center;justify-content:center"><span class="material-symbols-rounded" style="color:#fff;font-size:24px;font-variation-settings:'FILL' 1">auto_awesome</span></div>
+<span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;letter-spacing:-0.01em">SauberZauber</span>
+</div>
+<button onClick="{{ goTasks }}" style="display:flex;align-items:center;gap:14px;height:48px;padding:0 14px;border:0;border-radius:14px;background:{{ nav.tasksBg }};color:var(--ink);font:600 15px 'Figtree',sans-serif;cursor:pointer;text-align:left"><span class="material-symbols-rounded" style="font-size:24px;font-variation-settings:'FILL' {{ nav.tasksFill }}">checklist</span>Aufgaben</button>
+<button onClick="{{ goStats }}" style="display:flex;align-items:center;gap:14px;height:48px;padding:0 14px;border:0;border-radius:14px;background:{{ nav.statsBg }};color:var(--ink);font:600 15px 'Figtree',sans-serif;cursor:pointer;text-align:left"><span class="material-symbols-rounded" style="font-size:24px;font-variation-settings:'FILL' {{ nav.statsFill }}">bar_chart</span>Statistik &amp; Aufgaben</button>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;gap:12px;padding:10px">
+<div style="width:36px;height:36px;border-radius:50%;background:var(--me);color:var(--on-person);display:flex;align-items:center;justify-content:center;font-weight:700">{{ meInitial }}</div>
+<div style="flex:1;font-weight:600;font-size:15px">{{ me }}</div>
+<button onClick="{{ logout }}" title="Abmelden" style="width:40px;height:40px;border:0;border-radius:12px;background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center"><span class="material-symbols-rounded" style="font-size:22px">logout</span></button>
+</div>
+</nav>
+</sc-if>
+
+<main style="flex:1;min-width:0;min-height:0;overflow-y:auto;box-sizing:border-box;padding:{{ L.mainPad }};scrollbar-width:none">
+<div style="max-width:720px;margin:0 auto">
+
+<sc-if value="{{ isTasks }}" hint-placeholder-val="{{ true }}">
+<header style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:16px 4px 18px">
+<div style="display:flex;flex-direction:column;gap:2px">
+<span style="font-size:15px;color:var(--muted)">Hallo {{ me }}</span>
+<h1 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:34px;letter-spacing:-0.02em;line-height:1.05">Aufgaben</h1>
+</div>
+<sc-if value="{{ isPhone }}" hint-placeholder-val="{{ true }}">
+<button onClick="{{ toggleMenu }}" aria-label="Konto" style="width:44px;height:44px;border-radius:50%;border:0;background:var(--me);color:var(--on-person);font:700 17px 'Figtree',sans-serif;cursor:pointer">{{ meInitial }}</button>
+</sc-if>
+</header>
+<sc-if value="{{ showLpHint }}" hint-placeholder-val="{{ false }}">
+<p style="margin:-6px 4px 14px;font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px"><span class="material-symbols-rounded" style="font-size:18px">touch_app</span>Lange drücken, um für {{ other }} einzutragen</p>
+</sc-if>
+<sc-if value="{{ hasChores }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ tasks }}" as="t" hint-placeholder-count="5">
+<div onPointerDown="{{ t.onDown }}" onPointerUp="{{ t.onUp }}" onPointerLeave="{{ t.onUp }}" onContextMenu="{{ t.onCtx }}" style="display:flex;align-items:center;gap:14px;padding:14px 14px 14px 14px;background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);user-select:none;-webkit-user-select:none;touch-action:manipulation;transform:scale({{ t.cardScale }});transition:transform .25s ease">
+<div style="width:48px;height:48px;flex:none;border-radius:15px;background:var(--brand-soft);color:var(--brand);display:flex;align-items:center;justify-content:center"><span class="material-symbols-rounded" style="font-size:26px">{{ t.icon }}</span></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+<div style="font-weight:600;font-size:17px;line-height:1.25;text-wrap:pretty">{{ t.title }}</div>
+<sc-if value="{{ t.hasDesc }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;line-height:1.35;color:var(--muted);text-wrap:pretty">{{ t.desc }}</div></sc-if>
+<sc-if value="{{ t.hasLast }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);margin-top:3px"><span style="width:8px;height:8px;border-radius:50%;flex:none;background:{{ t.lastColor }}"></span>{{ t.lastText }}</div></sc-if>
+</div>
+<sc-if value="{{ showOtherBtn }}" hint-placeholder-val="{{ true }}">
+<button onClick="{{ t.onOther }}" onPointerDown="{{ stop }}" title="Für {{ other }} eintragen" aria-label="Von {{ other }} erledigt" style="width:44px;height:44px;flex:none;border-radius:50%;border:1.5px solid var(--other);background:transparent;color:var(--other);font:700 16px 'Figtree',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center">{{ otherInitial }}</button>
+</sc-if>
+<button onClick="{{ t.onMe }}" onPointerDown="{{ stop }}" aria-label="Von mir erledigt" style="width:56px;height:56px;flex:none;border-radius:50%;border:0;background:{{ t.btnBg }};color:{{ t.btnColor }};cursor:pointer;display:flex;align-items:center;justify-content:center;transform:scale({{ t.btnScale }});transition:background .2s ease,color .2s ease,transform .3s cubic-bezier(.3,1.6,.5,1)"><span class="material-symbols-rounded" style="font-size:30px;font-variation-settings:'wght' 600">check</span></button>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ noChores }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:56px 24px">
+<div style="width:96px;height:96px;border-radius:32px;background:var(--brand-soft);color:var(--brand);display:flex;align-items:center;justify-content:center"><span class="material-symbols-rounded" style="font-size:48px;font-variation-settings:'FILL' 1">auto_awesome</span></div>
+<h2 style="margin:6px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:24px">Noch keine Aufgaben</h2>
+<p style="margin:0;font-size:16px;line-height:1.45;color:var(--muted);max-width:300px;text-wrap:pretty">Legt unter „Statistik &amp; Aufgaben“ eure erste Aufgabe an. Danach reicht ein Tipp, um sie abzuhaken.</p>
+<button onClick="{{ emptyCreate }}" style="margin-top:8px;height:52px;padding:0 24px;border:0;border-radius:26px;background:var(--brand);color:var(--on-brand);font:600 16px 'Figtree',sans-serif;cursor:pointer;display:flex;align-items:center;gap:8px"><span class="material-symbols-rounded" style="font-size:22px">add</span>Erste Aufgabe anlegen</button>
+</div>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{ isStats }}" hint-placeholder-val="{{ false }}">
+<header style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:16px 4px 18px">
+<h1 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:34px;letter-spacing:-0.02em;line-height:1.05">Statistik &amp; Aufgaben</h1>
+</header>
+<section style="background:var(--surface);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:20px;display:flex;flex-direction:column;gap:14px">
+<div style="font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.02em">Insgesamt erledigt</div>
+<div style="display:flex;justify-content:space-between;align-items:flex-end">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600"><span style="width:10px;height:10px;border-radius:50%;background:var(--alex)"></span>{{ sum.alexLabel }}</span><span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:44px;line-height:1;color:var(--alex)">{{ sum.a }}</span></div>
+<div style="display:flex;flex-direction:column;gap:2px;align-items:flex-end"><span style="display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600">{{ sum.samLabel }}<span style="width:10px;height:10px;border-radius:50%;background:var(--sam)"></span></span><span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:44px;line-height:1;color:var(--sam)">{{ sum.s }}</span></div>
+</div>
+<div style="display:flex;gap:4px;height:14px">
+<div style="flex:{{ sum.aFlex }} 1 0;background:var(--alex);border-radius:7px;transition:flex-grow .4s ease"></div>
+<div style="flex:{{ sum.sFlex }} 1 0;background:var(--sam);border-radius:7px;transition:flex-grow .4s ease"></div>
+</div>
+<p style="margin:0;font-size:15px;line-height:1.45;text-wrap:pretty">{{ sum.text }}</p>
+</section>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:28px 4px 12px">
+<h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:22px">Pro Aufgabe</h2>
+<button onClick="{{ openCreate }}" style="height:44px;padding:0 18px 0 14px;border:0;border-radius:22px;background:var(--brand);color:var(--on-brand);font:600 15px 'Figtree',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px"><span class="material-symbols-rounded" style="font-size:22px">add</span>Neue Aufgabe</button>
+</div>
+<sc-if value="{{ hasChores }}" hint-placeholder-val="{{ true }}">
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column">
+<sc-for list="{{ rows }}" as="r" hint-placeholder-count="5">
+<div onClick="{{ r.onEdit }}" style="display:flex;align-items:center;gap:14px;padding:14px 8px 14px 16px;border-top:{{ r.border }};cursor:pointer">
+<div style="width:40px;height:40px;flex:none;border-radius:13px;background:var(--brand-soft);color:var(--brand);display:flex;align-items:center;justify-content:center"><span class="material-symbols-rounded" style="font-size:22px">{{ r.icon }}</span></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px">
+<div style="font-weight:600;font-size:16px;line-height:1.25">{{ r.title }}</div>
+<div style="display:flex;align-items:center;gap:8px">
+<span style="min-width:22px;font-weight:700;font-size:14px;color:var(--alex);font-variant-numeric:tabular-nums">{{ r.a }}</span>
+<div style="flex:1;display:flex;gap:3px;height:8px;background:{{ r.track }};border-radius:4px">
+<div style="flex:{{ r.aFlex }} 1 0;background:var(--alex);border-radius:4px"></div>
+<div style="flex:{{ r.sFlex }} 1 0;background:var(--sam);border-radius:4px"></div>
+</div>
+<span style="min-width:22px;text-align:right;font-weight:700;font-size:14px;color:var(--sam);font-variant-numeric:tabular-nums">{{ r.s }}</span>
+</div>
+</div>
+<button aria-label="Bearbeiten" style="width:44px;height:44px;flex:none;border:0;border-radius:50%;background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center"><span class="material-symbols-rounded" style="font-size:22px">edit</span></button>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ noChores }}" hint-placeholder-val="{{ false }}">
+<div style="border:1.5px dashed var(--line);border-radius:24px;padding:28px 20px;text-align:center;color:var(--muted);font-size:15px;line-height:1.45">Noch keine Aufgaben. Mit „Neue Aufgabe“ legst du die erste an.</div>
+</sc-if>
+</sc-if>
+
+</div>
+</main>
+
+<sc-if value="{{ isPhone }}" hint-placeholder-val="{{ true }}">
+<nav style="position:absolute;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:10px 24px 30px">
+<button onClick="{{ goTasks }}" style="flex:1;min-height:56px;border:0;background:transparent;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font:600 12px 'Figtree',sans-serif"><span style="width:64px;height:32px;border-radius:16px;background:{{ nav.tasksBg }};display:flex;align-items:center;justify-content:center;transition:background .2s"><span class="material-symbols-rounded" style="font-size:24px;font-variation-settings:'FILL' {{ nav.tasksFill }}">checklist</span></span>Aufgaben</button>
+<button onClick="{{ goStats }}" style="flex:1;min-height:56px;border:0;background:transparent;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font:600 12px 'Figtree',sans-serif"><span style="width:64px;height:32px;border-radius:16px;background:{{ nav.statsBg }};display:flex;align-items:center;justify-content:center;transition:background .2s"><span class="material-symbols-rounded" style="font-size:24px;font-variation-settings:'FILL' {{ nav.statsFill }}">bar_chart</span></span>Statistik</button>
+</nav>
+<div style="position:absolute;left:50%;bottom:8px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:var(--ink);z-index:90;pointer-events:none"></div>
+</sc-if>
+
+<div style="position:absolute;z-index:45;left:{{ L.snackLeft }};right:{{ L.snackRight }};bottom:{{ L.snackBottom }};max-width:{{ L.snackMax }};background:var(--snack);color:var(--on-snack);border-radius:16px;padding:6px 6px 6px 18px;min-height:52px;box-sizing:border-box;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);opacity:{{ snackOpacity }};transform:translateY({{ snackY }});pointer-events:{{ snackPe }};transition:opacity .2s ease,transform .25s ease">
+<span class="material-symbols-rounded" style="font-size:20px;color:var(--snack-action)">check_circle</span>
+<span style="flex:1;font-size:15px;font-weight:500">{{ snackText }}</span>
+<sc-if value="{{ snackHasUndo }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ undo }}" style="height:44px;padding:0 14px;border:0;border-radius:12px;background:transparent;color:var(--snack-action);font:700 15px 'Figtree',sans-serif;cursor:pointer">Rückgängig</button>
+</sc-if>
+</div>
+
+<sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ toggleMenu }}" style="position:absolute;inset:0;z-index:50"></div>
+<div style="position:absolute;z-index:51;top:132px;right:20px;width:220px;background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 32px rgba(0,0,0,.16);padding:8px;display:flex;flex-direction:column">
+<div style="padding:10px 12px 12px;font-size:14px;color:var(--muted)">Angemeldet als <strong style="color:var(--ink)">{{ me }}</strong></div>
+<button onClick="{{ logout }}" style="height:48px;border:0;border-radius:12px;background:var(--surface2);color:var(--ink);font:600 15px 'Figtree',sans-serif;cursor:pointer;display:flex;align-items:center;gap:10px;padding:0 12px"><span class="material-symbols-rounded" style="font-size:22px">logout</span>Abmelden</button>
+</div>
+</sc-if>
+
+<div onClick="{{ closeTop }}" style="position:absolute;inset:0;z-index:55;background:var(--scrim);opacity:{{ scrimOpacity }};pointer-events:{{ scrimPe }};transition:opacity .25s ease"></div>
+
+<div style="position:absolute;z-index:60;background:var(--surface);box-sizing:border-box;display:flex;flex-direction:column;gap:18px;left:{{ L.sheetLeft }};right:{{ L.sheetRight }};bottom:{{ L.sheetBottom }};top:{{ L.sheetTop }};width:{{ L.sheetWidth }};max-height:{{ L.sheetMaxH }};border-radius:{{ L.sheetRadius }};padding:{{ L.sheetPad }};transform:{{ sheetTransform }};opacity:{{ sheetOpacity }};pointer-events:{{ sheetPe }};transition:transform .32s cubic-bezier(.2,.8,.2,1),opacity .2s ease;overflow-y:auto">
+<sc-if value="{{ isPhone }}" hint-placeholder-val="{{ true }}"><div style="width:40px;height:5px;border-radius:3px;background:var(--line);align-self:center;flex:none"></div></sc-if>
+<h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:24px">{{ sheetTitle }}</h2>
+<label style="display:flex;flex-direction:column;gap:6px">
+<span style="font-size:14px;font-weight:600;color:var(--muted)">Titel</span>
+<input value="{{ sheet.title }}" onChange="{{ onTitle }}" placeholder="z. B. Wäsche waschen" style="height:52px;padding:0 16px;border-radius:14px;border:1.5px solid {{ titleBorder }};background:var(--bg);color:var(--ink);font:16px 'Figtree',sans-serif;outline:none" style-focus="border-color:var(--brand)">
+<sc-if value="{{ titleError }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;color:var(--danger)">Bitte gib einen Titel ein.</span></sc-if>
+</label>
+<label style="display:flex;flex-direction:column;gap:6px">
+<span style="font-size:14px;font-weight:600;color:var(--muted)">Beschreibung <span style="font-weight:400">(optional)</span></span>
+<textarea value="{{ sheet.desc }}" onChange="{{ onDesc }}" rows="2" placeholder="z. B. Inklusive Aufhängen" style="padding:14px 16px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font:16px/1.4 'Figtree',sans-serif;outline:none;resize:none" style-focus="border-color:var(--brand)"></textarea>
+</label>
+<div style="display:flex;flex-direction:column;gap:10px">
+<span style="font-size:14px;font-weight:600;color:var(--muted)">Icon</span>
+<div style="display:flex;align-items:center;gap:10px;height:48px;padding:0 14px;border-radius:24px;background:var(--surface2)">
+<span class="material-symbols-rounded" style="font-size:22px;color:var(--muted)">search</span>
+<input value="{{ sheet.query }}" onChange="{{ onQuery }}" placeholder="Suchen, z. B. Wäsche, Müll, Staubsaugen" style="flex:1;min-width:0;height:100%;border:0;background:transparent;color:var(--ink);font:16px 'Figtree',sans-serif;outline:none">
+</div>
+<div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;max-height:{{ L.gridMax }};overflow-y:auto;padding:2px">
+<sc-for list="{{ icons }}" as="ic" hint-placeholder-count="12">
+<button onClick="{{ ic.onPick }}" title="{{ ic.name }}" style="aspect-ratio:1;min-height:44px;border-radius:14px;border:2px solid {{ ic.border }};background:{{ ic.bg }};color:{{ ic.color }};cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0"><span class="material-symbols-rounded" style="font-size:26px">{{ ic.name }}</span></button>
+</sc-for>
+</div>
+<sc-if value="{{ noIcons }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:14px;color:var(--muted)">Keine Treffer für „{{ sheet.query }}“. Versuch einen anderen Begriff.</p></sc-if>
+</div>
+<div style="display:flex;align-items:center;gap:10px;padding-top:4px">
+<sc-if value="{{ isEdit }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ askDelete }}" style="height:48px;padding:0 14px;border:0;border-radius:24px;background:transparent;color:var(--danger);font:600 15px 'Figtree',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px"><span class="material-symbols-rounded" style="font-size:22px">delete</span>Löschen</button>
+</sc-if>
+<div style="flex:1"></div>
+<button onClick="{{ closeSheet }}" style="height:48px;padding:0 18px;border:0;border-radius:24px;background:transparent;color:var(--ink);font:600 15px 'Figtree',sans-serif;cursor:pointer">Abbrechen</button>
+<button onClick="{{ save }}" style="height:48px;padding:0 24px;border:0;border-radius:24px;background:var(--brand);color:var(--on-brand);font:600 15px 'Figtree',sans-serif;cursor:pointer">Speichern</button>
+</div>
+</div>
+
+<div style="position:absolute;z-index:60;background:var(--surface);box-sizing:border-box;display:flex;flex-direction:column;gap:12px;left:{{ L.chooserLeft }};right:{{ L.sheetRight }};bottom:{{ L.sheetBottom }};top:{{ L.chooserTop }};width:{{ L.chooserWidth }};border-radius:{{ L.sheetRadius }};padding:{{ L.sheetPad }};transform:{{ chooserTransform }};opacity:{{ chooserOpacity }};pointer-events:{{ chooserPe }};transition:transform .32s cubic-bezier(.2,.8,.2,1),opacity .2s ease">
+<sc-if value="{{ isPhone }}" hint-placeholder-val="{{ true }}"><div style="width:40px;height:5px;border-radius:3px;background:var(--line);align-self:center"></div></sc-if>
+<h2 style="margin:0 0 6px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:22px;text-wrap:pretty">Wer hat „{{ chooserTitle }}“ erledigt?</h2>
+<button onClick="{{ chooseMe }}" style="height:60px;border:0;border-radius:18px;background:var(--me-soft);color:var(--ink);font:600 17px 'Figtree',sans-serif;cursor:pointer;display:flex;align-items:center;gap:14px;padding:0 14px"><span style="width:36px;height:36px;border-radius:50%;background:var(--me);color:var(--on-person);display:flex;align-items:center;justify-content:center;font-weight:700">{{ meInitial }}</span>Ich ({{ me }})</button>
+<button onClick="{{ chooseOther }}" style="height:60px;border:0;border-radius:18px;background:var(--other-soft);color:var(--ink);font:600 17px 'Figtree',sans-serif;cursor:pointer;display:flex;align-items:center;gap:14px;padding:0 14px"><span style="width:36px;height:36px;border-radius:50%;background:var(--other);color:var(--on-person);display:flex;align-items:center;justify-content:center;font-weight:700">{{ otherInitial }}</span>{{ other }}</button>
+<button onClick="{{ closeChooser }}" style="height:48px;border:0;border-radius:24px;background:transparent;color:var(--muted);font:600 15px 'Figtree',sans-serif;cursor:pointer">Abbrechen</button>
+</div>
+
+<sc-if value="{{ confirmOpen }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ cancelDelete }}" style="position:absolute;inset:0;z-index:70;background:var(--scrim)"></div>
+<div style="position:absolute;z-index:71;left:50%;top:50%;transform:translate(-50%,-50%);width:320px;max-width:calc(100% - 48px);box-sizing:border-box;background:var(--surface);border-radius:28px;padding:24px;display:flex;flex-direction:column;gap:10px;box-shadow:0 20px 48px rgba(0,0,0,.25)">
+<span class="material-symbols-rounded" style="font-size:28px;color:var(--danger)">delete</span>
+<h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:22px;text-wrap:pretty">„{{ sheet.title }}“ löschen?</h2>
+<p style="margin:0;font-size:15px;line-height:1.45;color:var(--muted);text-wrap:pretty">{{ deleteText }}</p>
+<div style="display:flex;justify-content:flex-end;gap:8px;padding-top:10px">
+<button onClick="{{ cancelDelete }}" style="height:48px;padding:0 18px;border:0;border-radius:24px;background:transparent;color:var(--ink);font:600 15px 'Figtree',sans-serif;cursor:pointer">Abbrechen</button>
+<button onClick="{{ doDelete }}" style="height:48px;padding:0 22px;border:0;border-radius:24px;background:var(--danger);color:var(--on-brand);font:600 15px 'Figtree',sans-serif;cursor:pointer">Löschen</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isLogin }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:75;background:var(--bg);display:flex;flex-direction:column;box-sizing:border-box;padding:{{ L.loginPad }}">
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center">
+<div style="width:104px;height:104px;border-radius:30px;background:#5A3FC0;display:flex;align-items:center;justify-content:center;box-shadow:0 16px 40px rgba(90,63,192,.35)"><span class="material-symbols-rounded" style="color:#fff;font-size:56px;font-variation-settings:'FILL' 1">auto_awesome</span></div>
+<h1 style="margin:8px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:38px;letter-spacing:-0.02em">SauberZauber</h1>
+<p style="margin:0;font-size:17px;line-height:1.45;color:var(--muted);max-width:280px;text-wrap:pretty">Haushalt fair geteilt – ein Tipp, und schon ist’s notiert.</p>
+</div>
+<div style="width:100%;max-width:360px;align-self:center;display:flex;flex-direction:column;gap:12px">
+<sc-if value="{{ loginErrorShown }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:0;padding:12px 14px;border-radius:14px;background:var(--surface2);color:var(--danger);font-size:15px;display:flex;align-items:center;gap:8px"><span class="material-symbols-rounded" style="font-size:20px">error</span>{{ loginError }}</p></sc-if>
+<button onClick="{{ login }}" disabled="{{ busy }}" style="height:58px;border:0;border-radius:29px;background:var(--brand);color:var(--on-brand);font:600 17px 'Figtree',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;opacity:{{ busyOpacity }}"><span class="material-symbols-rounded" style="font-size:24px">passkey</span>{{ loginLabel }}</button>
+</div>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844},&quot;layout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;phone&quot;,&quot;desktop&quot;],&quot;default&quot;:&quot;phone&quot;,&quot;tsType&quot;:&quot;'phone'|'desktop'&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;,&quot;auto&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light'|'dark'|'auto'&quot;},&quot;me&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Alex&quot;,&quot;Sam&quot;],&quot;default&quot;:&quot;Alex&quot;,&quot;tsType&quot;:&quot;'Alex'|'Sam'&quot;},&quot;start&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;tasks&quot;,&quot;stats&quot;,&quot;login&quot;,&quot;empty&quot;],&quot;default&quot;:&quot;tasks&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;otherAction&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;button&quot;,&quot;longpress&quot;],&quot;default&quot;:&quot;button&quot;,&quot;tsType&quot;:&quot;'button'|'longpress'&quot;},&quot;showLastDone&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+const ICONS = [
+['local_laundry_service','wäsche waschen waschmaschine kleidung'],['dry_cleaning','wäsche kleidung bügel reinigung aufhängen'],['iron','bügeln bügeleisen wäsche'],['checkroom','kleidung kleiderschrank wäsche aufräumen'],
+['delete','müll mülleimer abfall restmüll rausbringen'],['recycling','müll recycling gelber sack papier pfand altglas'],['compost','biomüll kompost müll bio'],['delete_sweep','müll aufräumen fegen'],
+['cleaning_services','putzen staubsaugen reinigen besen fegen wischen'],['soap','seife spülen putzen hände abwasch'],['sanitizer','desinfizieren putzen reinigen'],['water_drop','wasser gießen spülen'],
+['bathtub','bad badewanne putzen'],['shower','dusche bad putzen'],['wc','toilette klo wc bad'],['bathroom','bad badezimmer'],
+['kitchen','küche kühlschrank abtauen'],['countertops','küche arbeitsplatte spülmaschine abwasch geschirr'],['microwave','mikrowelle küche'],['coffee_maker','kaffee kaffeemaschine entkalken küche'],
+['restaurant','essen kochen geschirr besteck'],['cooking','kochen essen küche topf'],['skillet','pfanne kochen braten'],['flatware','besteck geschirr spülmaschine tisch decken'],
+['shopping_cart','einkaufen supermarkt'],['local_grocery_store','einkaufen lebensmittel'],['shopping_bag','einkaufen tasche'],['package_2','paket post'],
+['bed','bett bettwäsche beziehen'],['king_bed','bett schlafzimmer'],['weekend','sofa wohnzimmer aufräumen'],['inventory_2','aufräumen kiste keller dachboden'],
+['window','fenster putzen'],['door_front','tür flur haustür'],['light','lampe licht glühbirne'],['air','lüften luft'],
+['potted_plant','pflanzen gießen blumen zimmerpflanze'],['local_florist','blumen pflanzen'],['yard','garten unkraut'],['grass','rasen mähen garten'],
+['pets','haustier katze hund katzenklo füttern gassi'],['cruelty_free','hase haustier kaninchen'],['directions_car','auto tanken'],['local_car_wash','auto waschen'],
+['mail','post briefkasten'],['receipt_long','rechnungen papierkram'],['savings','geld finanzen sparen'],['handyman','reparieren werkzeug heimwerken'],
+['child_care','kind baby'],['thermostat','heizung thermostat'],['ac_unit','klima kühlschrank abtauen gefrierschrank'],['eco','umwelt nachhaltig pflanzen']
+];
+const fold = s => (s || '').toLowerCase().replace(/ä/g, 'a').replace(/ö/g, 'o').replace(/ü/g, 'u').replace(/ß/g, 'ss').replace(/ae/g, 'a').replace(/oe/g, 'o').replace(/ue/g, 'u');
+const HAY = ICONS.map(([n, k]) => [n, fold(n.replace(/_/g, ' ') + ' ' + k)]);
+const SEED = [
+{id:'c1',title:'Wäsche waschen',desc:'Waschen, aufhängen, zusammenlegen',icon:'local_laundry_service',a:9,s:7},
+{id:'c2',title:'Müll rausbringen',desc:'Rest, Bio und Papier',icon:'delete',a:6,s:11},
+{id:'c3',title:'Staubsaugen',desc:'',icon:'cleaning_services',a:5,s:4},
+{id:'c4',title:'Spülmaschine ausräumen',desc:'',icon:'countertops',a:12,s:10},
+{id:'c5',title:'Bad putzen',desc:'Waschbecken, Dusche, Spiegel',icon:'bathtub',a:2,s:5},
+{id:'c6',title:'Pflanzen gießen',desc:'',icon:'potted_plant',a:7,s:3},
+{id:'c7',title:'Einkaufen',desc:'',icon:'shopping_cart',a:4,s:6}
+];
+function seedLog() {
+  let r = 11; const rnd = () => (r = (r * 16807) % 2147483647) / 2147483647;
+  const now = Date.now(), log = []; let n = 0;
+  SEED.forEach(c => ['Alex', 'Sam'].forEach(p => { const k = p === 'Alex' ? c.a : c.s; for (let i = 0; i < k; i++) log.push({ id: 'e' + n++, choreId: c.id, by: p, at: now - 40 * 60e3 - Math.floor(rnd() * rnd() * 30 * 864e5) }); }));
+  return log;
+}
+function rel(t) {
+  const m = Math.round((Date.now() - t) / 60000);
+  if (m < 1) return 'gerade eben'; if (m < 60) return `vor ${m} Min.`;
+  const h = Math.round(m / 60); if (h < 24) return `vor ${h} Std.`;
+  const d = Math.round(h / 24); return d === 1 ? 'gestern' : `vor ${d} Tagen`;
+}
+let uid = 1000;
+class Component extends DCLogic {
+  state = (() => {
+    const st = (this.props && this.props.start) || 'tasks', empty = st === 'empty';
+    return { screen: st === 'login' ? 'login' : 'app', tab: st === 'stats' ? 'stats' : 'tasks', chores: empty ? [] : SEED.map(({ a, s, ...c }) => c), log: empty ? [] : seedLog(),
+      snack: null, snackOpen: false, sheet: { mode: 'create', id: null, title: '', desc: '', icon: 'cleaning_services', query: '', touched: false }, sheetOpen: false,
+      chooser: null, chooserOpen: false, confirm: false, menu: false, justDone: {}, busy: false, loginError: null, sysDark: false };
+  })();
+  componentDidMount() {
+    this.tick = setInterval(() => this.forceUpdate(), 30000);
+    this.mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+    if (this.mq) { this.mqh = e => this.setState({ sysDark: e.matches }); this.mq.addEventListener('change', this.mqh); this.setState({ sysDark: this.mq.matches }); }
+  }
+  componentWillUnmount() { clearInterval(this.tick); clearTimeout(this.st); clearTimeout(this.lp); this.mq && this.mq.removeEventListener('change', this.mqh); }
+  get me() { return this.props.me === 'Sam' ? 'Sam' : 'Alex'; }
+  get other() { return this.me === 'Alex' ? 'Sam' : 'Alex'; }
+  showSnack(text, undoId) { clearTimeout(this.st); this.setState({ snack: { text, undoId }, snackOpen: true }); this.st = setTimeout(() => this.setState({ snackOpen: false }), 5000); }
+  markDone(c, by) {
+    const id = 'e' + uid++;
+    this.setState(s => ({ log: [...s.log, { id, choreId: c.id, by, at: Date.now() }], justDone: { ...s.justDone, [c.id]: by }, chooserOpen: false }));
+    navigator.vibrate && navigator.vibrate(12);
+    setTimeout(() => this.setState(s => { const j = { ...s.justDone }; delete j[c.id]; return { justDone: j }; }), 1300);
+    this.showSnack(`Erledigt von ${by}`, id);
+  }
+  undo = () => { const id = this.state.snack && this.state.snack.undoId; clearTimeout(this.st); this.setState(s => ({ log: s.log.filter(e => e.id !== id), snackOpen: false })); };
+  openCreate = () => this.setState({ sheet: { mode: 'create', id: null, title: '', desc: '', icon: 'cleaning_services', query: '', touched: false }, sheetOpen: true, snackOpen: false });
+  openEdit(c) { this.setState({ sheet: { mode: 'edit', id: c.id, title: c.title, desc: c.desc, icon: c.icon, query: '', touched: false }, sheetOpen: true, snackOpen: false }); }
+  setSheet(p) { this.setState(s => ({ sheet: { ...s.sheet, ...p } })); }
+  save = () => {
+    const sh = this.state.sheet, title = sh.title.trim();
+    if (!title) return this.setSheet({ touched: true });
+    if (sh.mode === 'create') { this.setState(s => ({ chores: [...s.chores, { id: 'c' + uid++, title, desc: sh.desc.trim(), icon: sh.icon }], sheetOpen: false })); this.showSnack('Aufgabe angelegt'); }
+    else { this.setState(s => ({ chores: s.chores.map(c => c.id === sh.id ? { ...c, title, desc: sh.desc.trim(), icon: sh.icon } : c), sheetOpen: false })); this.showSnack('Änderungen gespeichert'); }
+  };
+  doDelete = () => { const id = this.state.sheet.id; this.setState(s => ({ chores: s.chores.filter(c => c.id !== id), log: s.log.filter(e => e.choreId !== id), confirm: false, sheetOpen: false })); this.showSnack('Aufgabe gelöscht'); };
+  login = () => {
+    this.setState({ busy: true, loginError: null });
+    setTimeout(() => this.setState({ busy: false, screen: 'app' }), 900);
+  };
+  renderVals() {
+    const s = this.state, me = this.me, other = this.other, isPhone = (this.props.layout || 'phone') !== 'desktop';
+    const themeProp = this.props.theme || 'light';
+    const themeName = themeProp === 'auto' ? (s.sysDark ? 'dark' : 'light') : themeProp;
+    const longpress = this.props.otherAction === 'longpress', showLast = this.props.showLastDone !== false;
+    const pc = p => p === 'Alex' ? 'var(--alex)' : 'var(--sam)';
+    const last = {}, cnt = {};
+    s.log.forEach(e => { if (!last[e.choreId] || last[e.choreId].at < e.at) last[e.choreId] = e; cnt[e.choreId] = cnt[e.choreId] || { Alex: 0, Sam: 0 }; cnt[e.choreId][e.by]++; });
+    const tasks = s.chores.map(c => {
+      const l = last[c.id], done = s.justDone[c.id];
+      return { ...c, hasDesc: !!c.desc, hasLast: showLast && !!l, lastColor: l ? pc(l.by) : 'transparent', lastText: l ? `Zuletzt ${l.by === me ? 'du' : l.by} · ${rel(l.at)}` : '',
+        btnBg: done ? (done === me ? 'var(--me)' : 'var(--other)') : 'var(--me-soft)', btnColor: done ? 'var(--on-person)' : 'var(--me)', btnScale: done ? 1.08 : 1, cardScale: s.chooser === c.id && s.chooserOpen ? 0.98 : 1,
+        onMe: () => { if (this.lpFired) { this.lpFired = false; return; } this.markDone(c, me); }, onOther: () => this.markDone(c, other),
+        onDown: e => { if (e.button > 0) return; this.lpFired = false; clearTimeout(this.lp); this.lp = setTimeout(() => { this.lpFired = true; navigator.vibrate && navigator.vibrate(20); this.setState({ chooser: c.id, chooserOpen: true }); }, 480); },
+        onUp: () => clearTimeout(this.lp), onCtx: e => { e.preventDefault(); this.setState({ chooser: c.id, chooserOpen: true }); } };
+    });
+    let a = 0, b = 0; s.log.forEach(e => e.by === 'Alex' ? a++ : b++);
+    const tot = a + b, mine = me === 'Alex' ? a : b, theirs = me === 'Alex' ? b : a;
+    let text;
+    if (!tot) text = 'Sobald ihr Aufgaben erledigt, seht ihr hier, wie ihr euch die Arbeit teilt.';
+    else if (Math.abs(a - b) / tot <= 0.1) text = 'Ihr seid fast gleichauf – schön, wie ihr euch das teilt.';
+    else if (mine < theirs) {
+      let best = null, bd = Infinity; s.chores.forEach(c => { const k = cnt[c.id] || { Alex: 0, Sam: 0 }; const d = k[me] - k[other]; if (d < bd) { bd = d; best = c; } });
+      text = `${other} hat zuletzt etwas mehr übernommen.${best ? ` Wie wär’s als Nächstes mit „${best.title}“?` : ''}`;
+    } else text = `Du hast zuletzt etwas mehr übernommen – danke dir! Kleine Unterschiede gleichen sich mit der Zeit aus.`;
+    const rows = s.chores.map((c, i) => { const k = cnt[c.id] || { Alex: 0, Sam: 0 }, z = !k.Alex && !k.Sam;
+      return { ...c, a: k.Alex, s: k.Sam, aFlex: k.Alex, sFlex: k.Sam, track: z ? 'var(--surface2)' : 'transparent', border: i ? '1px solid var(--line)' : '0', onEdit: () => this.openEdit(c) }; });
+    const q = fold(s.sheet.query).trim().split(/\s+/).filter(Boolean);
+    const icons = HAY.filter(([, h]) => q.every(t => h.includes(t))).map(([name]) => { const sel = name === s.sheet.icon;
+      return { name, border: sel ? 'var(--brand)' : 'transparent', bg: sel ? 'var(--brand-soft)' : 'var(--surface2)', color: sel ? 'var(--brand)' : 'var(--ink)', onPick: () => this.setSheet({ icon: name }) }; });
+    const chooserChore = s.chores.find(c => c.id === s.chooser);
+    const L = isPhone ? { dir: 'column', mainPad: '54px 16px 140px', snackLeft: '16px', snackRight: '16px', snackBottom: '112px', snackMax: 'none',
+      sheetLeft: '0', sheetRight: '0', sheetBottom: '0', sheetTop: 'auto', chooserTop: 'auto', sheetWidth: 'auto', chooserWidth: 'auto', sheetMaxH: '92%', sheetRadius: '28px 28px 0 0', sheetPad: '10px 20px 40px', gridMax: '196px', loginPad: '70px 24px 56px' }
+      : { dir: 'row', mainPad: '40px 48px 64px', snackLeft: '280px', snackRight: 'auto', snackBottom: '24px', snackMax: '440px',
+      sheetLeft: 'calc(50% - 280px)', sheetRight: 'auto', sheetBottom: 'auto', sheetTop: '6%', chooserTop: '24%', sheetWidth: '560px', chooserWidth: '400px', sheetMaxH: '88%', sheetRadius: '28px', sheetPad: '28px', gridMax: '220px', loginPad: '48px' };
+    L.chooserLeft = isPhone ? '0' : 'calc(50% - 200px)';
+    const hidden = isPhone ? 'translateY(105%)' : 'scale(.96)';
+    const anyOverlay = s.sheetOpen || s.chooserOpen;
+    const nav = { tasksBg: s.tab === 'tasks' ? 'var(--brand-soft)' : 'transparent', statsBg: s.tab === 'stats' ? 'var(--brand-soft)' : 'transparent', tasksFill: s.tab === 'tasks' ? 1 : 0, statsFill: s.tab === 'stats' ? 1 : 0 };
+    const k = s.sheet.id && cnt[s.sheet.id]; const n = k ? k.Alex + k.Sam : 0;
+    return {
+      themeName, me, other, meInitial: me[0], otherInitial: other[0], isPhone, isDesktop: !isPhone, L, nav,
+      isTasks: s.tab === 'tasks', isStats: s.tab === 'stats', isLogin: s.screen === 'login',
+      hasChores: s.chores.length > 0, noChores: s.chores.length === 0, tasks, rows, showOtherBtn: !longpress, showLpHint: longpress && s.chores.length > 0,
+      stop: e => e.stopPropagation(),
+      goTasks: () => this.setState({ tab: 'tasks', menu: false }), goStats: () => this.setState({ tab: 'stats', menu: false }),
+      emptyCreate: () => { this.setState({ tab: 'stats' }); this.openCreate(); }, openCreate: this.openCreate,
+      sum: { a, s: b, aFlex: tot ? a : 1, sFlex: tot ? b : 1, text, alexLabel: me === 'Alex' ? 'Alex (du)' : 'Alex', samLabel: me === 'Sam' ? 'Sam (du)' : 'Sam' },
+      snackText: s.snack ? s.snack.text : '', snackHasUndo: !!(s.snack && s.snack.undoId), undo: this.undo,
+      snackOpacity: s.snackOpen ? 1 : 0, snackY: s.snackOpen ? '0' : '16px', snackPe: s.snackOpen ? 'auto' : 'none',
+      menuOpen: s.menu, toggleMenu: () => this.setState({ menu: !s.menu }), logout: () => this.setState({ menu: false, screen: 'login', snackOpen: false }),
+      scrimOpacity: anyOverlay ? 1 : 0, scrimPe: anyOverlay ? 'auto' : 'none',
+      closeTop: () => this.setState({ sheetOpen: false, chooserOpen: false }),
+      sheet: s.sheet, sheetTitle: s.sheet.mode === 'edit' ? 'Aufgabe bearbeiten' : 'Neue Aufgabe', isEdit: s.sheet.mode === 'edit',
+      sheetTransform: s.sheetOpen ? 'none' : hidden, sheetOpacity: s.sheetOpen ? 1 : 0, sheetPe: s.sheetOpen ? 'auto' : 'none',
+      onTitle: e => this.setSheet({ title: e.target.value }), onDesc: e => this.setSheet({ desc: e.target.value }), onQuery: e => this.setSheet({ query: e.target.value }),
+      titleError: s.sheet.touched && !s.sheet.title.trim(), titleBorder: s.sheet.touched && !s.sheet.title.trim() ? 'var(--danger)' : 'var(--line)',
+      icons, noIcons: icons.length === 0, save: this.save, closeSheet: () => this.setState({ sheetOpen: false }),
+      askDelete: () => this.setState({ confirm: true }), cancelDelete: () => this.setState({ confirm: false }), doDelete: this.doDelete, confirmOpen: s.confirm,
+      deleteText: n ? `Die Aufgabe und ihre Statistik (${n}× erledigt) werden dauerhaft entfernt.` : 'Die Aufgabe wird dauerhaft entfernt.',
+      chooserTitle: chooserChore ? chooserChore.title : '', chooserTransform: s.chooserOpen ? 'none' : hidden, chooserOpacity: s.chooserOpen ? 1 : 0, chooserPe: s.chooserOpen ? 'auto' : 'none',
+      chooseMe: () => chooserChore && this.markDone(chooserChore, me), chooseOther: () => chooserChore && this.markDone(chooserChore, other), closeChooser: () => this.setState({ chooserOpen: false }),
+      login: this.login, busy: s.busy, busyOpacity: s.busy ? 0.7 : 1, loginLabel: s.busy ? 'Einen Moment …' : 'Mit Passkey anmelden', loginError: s.loginError, loginErrorShown: !!s.loginError
+    };
+  }
+}
+</script>
+</body>
+</html>

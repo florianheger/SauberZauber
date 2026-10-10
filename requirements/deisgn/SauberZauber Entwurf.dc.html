@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400..700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=block">
+<style>body{margin:0;background:#efede8;font-family:'Figtree',system-ui,sans-serif}a{color:#5A3FC0}a:hover{color:#3F2A92}.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}.dv-tname{font:600 13px/1.2 system-ui,sans-serif;color:#1a1a1a}.dv-opts{display:flex;flex-wrap:wrap;gap:36px;align-items:flex-start}.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none}.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 system-ui,sans-serif;color:rgba(0,0,0,.55)}.dv-card{max-width:100%;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}.dv-opt:target .dv-oid{background:#2a78d6;color:#fff}.dv-next{margin:22px 0 0;font:12px/1.5 system-ui,sans-serif;color:rgba(0,0,0,.5)}</style></helmet>
+
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">SauberZauber – neues Design (interaktiv)</span></div>
+<div style="max-width:880px;margin:0 0 28px;font-size:14px;line-height:1.55;color:#3a3640;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px 32px">
+<p style="margin:0"><strong>Richtung.</strong> Warmes Papier-Weiß, ein „Zauber“-Violett als Markenfarbe, Teal für Alex und Koralle für Sam. Bricolage Grotesque für Titel, Figtree für Text, Icons aus Material Symbols Rounded.</p>
+<p style="margin:0"><strong>Erledigt.</strong> Der große runde Haken zählt für dich. Der kleine Kreis mit Initiale zählt für die andere Person. Lange drücken öffnet die Auswahl. Danach erscheint eine Snackbar mit „Rückgängig“.</p>
+<p style="margin:0"><strong>Fairness.</strong> Die Statistik zeigt Gesamtwerte und einen geteilten Balken pro Aufgabe, dazu ein freundlicher Satz statt einer Rangliste. Wer weniger gemacht hat, bekommt einen Vorschlag.</p>
+<p style="margin:0"><strong>Ausprobieren.</strong> Alle Rahmen sind klickbar: abhaken, rückgängig machen, Aufgaben anlegen und bearbeiten (Icon-Suche auf Deutsch, z. B. „Müll“), löschen, abmelden. Tweaks: Person, Zweit-Aktion, „Zuletzt“-Zeile.</p>
+</div>
+<div class="dv-opts">
+<div class="dv-opt" id="1a"><div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Aufgaben · hell</div>
+<div style="padding:10px;background:#141414;border-radius:62px;box-shadow:0 20px 50px rgba(0,0,0,.18)"><div style="position:relative;width:390px;height:844px;border-radius:52px;overflow:hidden;background:#fff">
+<dc-import name="SauberZauber App" layout="phone" theme="light" start="tasks" me="{{ me }}" other-action="{{ otherAction }}" show-last-done="{{ showLastDone }}" hint-size="390px,844px" style="position:absolute;inset:0"></dc-import>
+<div style="position:absolute;top:11px;left:50%;margin-left:-62px;width:124px;height:36px;border-radius:20px;background:#000;z-index:100;pointer-events:none"></div>
+</div></div></div>
+
+<div class="dv-opt" id="1b"><div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Statistik &amp; Aufgaben · dunkel</div>
+<div style="padding:10px;background:#141414;border-radius:62px;box-shadow:0 20px 50px rgba(0,0,0,.18)"><div style="position:relative;width:390px;height:844px;border-radius:52px;overflow:hidden;background:#000">
+<dc-import name="SauberZauber App" layout="phone" theme="dark" start="stats" me="{{ me }}" other-action="{{ otherAction }}" show-last-done="{{ showLastDone }}" hint-size="390px,844px" style="position:absolute;inset:0"></dc-import>
+<div style="position:absolute;top:11px;left:50%;margin-left:-62px;width:124px;height:36px;border-radius:20px;background:#000;z-index:100;pointer-events:none"></div>
+</div></div></div>
+
+<div class="dv-opt" id="1c"><div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Anmeldung</div>
+<div style="padding:10px;background:#141414;border-radius:62px;box-shadow:0 20px 50px rgba(0,0,0,.18)"><div style="position:relative;width:390px;height:844px;border-radius:52px;overflow:hidden;background:#fff">
+<dc-import name="SauberZauber App" layout="phone" theme="light" start="login" me="{{ me }}" other-action="{{ otherAction }}" show-last-done="{{ showLastDone }}" hint-size="390px,844px" style="position:absolute;inset:0"></dc-import>
+<div style="position:absolute;top:11px;left:50%;margin-left:-62px;width:124px;height:36px;border-radius:20px;background:#000;z-index:100;pointer-events:none"></div>
+</div></div></div>
+
+<div class="dv-opt" id="1d"><div class="dv-olabel"><a class="dv-oid" href="#1d">1d</a>Leerzustand</div>
+<div style="padding:10px;background:#141414;border-radius:62px;box-shadow:0 20px 50px rgba(0,0,0,.18)"><div style="position:relative;width:390px;height:844px;border-radius:52px;overflow:hidden;background:#fff">
+<dc-import name="SauberZauber App" layout="phone" theme="light" start="empty" me="{{ me }}" other-action="{{ otherAction }}" show-last-done="{{ showLastDone }}" hint-size="390px,844px" style="position:absolute;inset:0"></dc-import>
+<div style="position:absolute;top:11px;left:50%;margin-left:-62px;width:124px;height:36px;border-radius:20px;background:#000;z-index:100;pointer-events:none"></div>
+</div></div></div>
+</div>
+
+<div class="dv-opts" style="margin-top:44px">
+<div class="dv-opt" id="1e"><div class="dv-olabel"><a class="dv-oid" href="#1e">1e</a>Desktop · installierte PWA im eigenen Fenster</div>
+<div style="width:1200px;border-radius:12px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.16);border:1px solid rgba(0,0,0,.12)">
+<div style="height:36px;background:#5A3FC0;display:flex;align-items:center;gap:8px;padding:0 14px;color:#fff;font-size:13px;font-weight:600"><span class="material-symbols-rounded" style="font-size:18px;font-variation-settings:'FILL' 1">auto_awesome</span>SauberZauber<span style="flex:1"></span><span style="display:flex;gap:8px"><span style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.35)"></span><span style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.35)"></span><span style="width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.35)"></span></span></div>
+<div style="position:relative;height:760px">
+<dc-import name="SauberZauber App" layout="desktop" theme="light" start="tasks" me="{{ me }}" other-action="{{ otherAction }}" show-last-done="{{ showLastDone }}" hint-size="1200px,760px" style="position:absolute;inset:0"></dc-import>
+</div></div></div>
+
+<div class="dv-opt" id="1f"><div class="dv-olabel"><a class="dv-oid" href="#1f">1f</a>PWA: App-Icon, Splash, Theme-Farben</div>
+<div class="dv-card" style="width:420px;padding:28px;box-sizing:border-box;display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;align-items:flex-end;gap:20px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:120px;height:120px;border-radius:28px;background:#5A3FC0;display:flex;align-items:center;justify-content:center"><span class="material-symbols-rounded" style="color:#fff;font-size:68px;font-variation-settings:'FILL' 1">auto_awesome</span></div><span style="font-size:12px;color:#666">iOS 180 px</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:72px;height:72px;border-radius:50%;background:#5A3FC0;display:flex;align-items:center;justify-content:center"><span class="material-symbols-rounded" style="color:#fff;font-size:36px;font-variation-settings:'FILL' 1">auto_awesome</span></div><span style="font-size:12px;color:#666">Android maskable</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:8px;background:#5A3FC0;display:flex;align-items:center;justify-content:center"><span class="material-symbols-rounded" style="color:#fff;font-size:20px;font-variation-settings:'FILL' 1">auto_awesome</span></div><span style="font-size:12px;color:#666">Favicon</span></div>
+</div>
+<div style="display:flex;gap:16px">
+<div style="width:150px;height:300px;border-radius:24px;background:#5A3FC0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#fff"><span class="material-symbols-rounded" style="font-size:52px;font-variation-settings:'FILL' 1">auto_awesome</span><span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:18px">SauberZauber</span></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;font-size:13px;color:#333">
+<div style="font-weight:600">manifest.webmanifest</div>
+<div style="display:flex;align-items:center;gap:8px"><span style="width:20px;height:20px;border-radius:6px;background:#5A3FC0"></span>theme_color #5A3FC0</div>
+<div style="display:flex;align-items:center;gap:8px"><span style="width:20px;height:20px;border-radius:6px;background:#5A3FC0"></span>background_color #5A3FC0</div>
+<div style="display:flex;align-items:center;gap:8px"><span style="width:20px;height:20px;border-radius:6px;background:#F8F6F1;border:1px solid #ddd"></span>Status-Leiste hell</div>
+<div style="display:flex;align-items:center;gap:8px"><span style="width:20px;height:20px;border-radius:6px;background:#17141F"></span>Status-Leiste dunkel</div>
+<div style="color:#666;line-height:1.45">display: standalone · viewport-fit=cover · Abstände über env(safe-area-inset-*)</div>
+</div>
+</div>
+<p style="margin:0;font-size:12px;color:#888;line-height:1.45">Platzhalter-Icon (Material Symbol „auto_awesome“). Ein eigenes Logo kann es später ersetzen.</p>
+</div></div>
+</div>
+<p class="dv-next">Ideen für die nächste Runde: „<a class="dv-oid" href="#1a">1a</a> mit Long-Press statt Zweit-Button“ · „Statistik nach Zeitraum filtern (Woche/Monat)“ · „eigenes Logo statt Platzhalter“</p>
+</section>
+
+<section class="dv-turn" id="t0">
+<div class="dv-thd"><a class="dv-tid" href="#t0">0</a><span class="dv-tname">Ist-Zustand im Repo (login.html, home.html, Browser-Standardstile)</span></div>
+<div class="dv-opts">
+<div class="dv-opt" id="0a"><div class="dv-olabel"><a class="dv-oid" href="#0a">0a</a>Login</div>
+<div class="dv-card" style="width:390px;height:844px;font-family:'Times New Roman',serif;font-size:16px;color:#000">
+<main style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;min-height:844px;padding:1rem;box-sizing:border-box;text-align:center">
+<h1 style="font-size:2em;margin:0.67em 0">SauberZauber</h1>
+<button type="button" style="font:inherit;padding:0.75rem 1.5rem">Mit Passkey anmelden</button>
+</main></div></div>
+<div class="dv-opt" id="0b"><div class="dv-olabel"><a class="dv-oid" href="#0b">0b</a>Home</div>
+<div class="dv-card" style="width:390px;height:844px;font-family:'Times New Roman',serif;font-size:16px;color:#000">
+<main style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;min-height:844px;padding:1rem;box-sizing:border-box;text-align:center">
+<h1 style="font-size:2em;margin:0.67em 0">Hallo, florian!</h1>
+<button type="button" style="font:inherit;padding:0.75rem 1.5rem">Abmelden</button>
+</main></div></div>
+</div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;me&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Alex&quot;,&quot;Sam&quot;],&quot;default&quot;:&quot;Alex&quot;,&quot;tsType&quot;:&quot;'Alex'|'Sam'&quot;,&quot;section&quot;:&quot;Prototyp&quot;},&quot;otherAction&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;button&quot;,&quot;longpress&quot;],&quot;default&quot;:&quot;button&quot;,&quot;tsType&quot;:&quot;'button'|'longpress'&quot;,&quot;section&quot;:&quot;Prototyp&quot;},&quot;showLastDone&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Prototyp&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return { me: this.props.me ?? 'Alex', otherAction: this.props.otherAction ?? 'button', showLastDone: this.props.showLastDone ?? true };
+  }
+}
+</script>
+</body>
+</html>
