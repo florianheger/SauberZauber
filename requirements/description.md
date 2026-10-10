@@ -3,6 +3,8 @@ The app should track different tasks in the household, like washing clothes, emp
 
 The app is used for one household with two peoples. There is no need for functionbality like multiple households or more than two users.
 
+The UI is in german.
+
 # Tech Stack
 The app is intended to be runned completely in docker using docker-compose. 
 
