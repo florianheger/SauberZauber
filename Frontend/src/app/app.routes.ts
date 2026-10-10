@@ -1,10 +1,20 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './auth/auth.guard';
-import { Home } from './home/home';
 import { Login } from './login/login';
+import { Shell } from './shell/shell';
+import { StatsPage } from './stats/stats-page';
+import { TasksPage } from './tasks/tasks-page';
 
 export const routes: Routes = [
-  { path: '', component: Home, canActivate: [authGuard] },
-  { path: 'login', component: Login },
+  { path: 'login', component: Login, title: 'Anmelden – SauberZauber' },
+  {
+    path: '',
+    component: Shell,
+    canActivate: [authGuard],
+    children: [
+      { path: '', component: TasksPage, title: 'Aufgaben – SauberZauber' },
+      { path: 'statistik', component: StatsPage, title: 'Statistik & Aufgaben – SauberZauber' },
+    ],
+  },
   { path: '**', redirectTo: '' },
 ];

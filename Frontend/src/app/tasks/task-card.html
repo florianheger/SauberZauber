@@ -1,0 +1,41 @@
+<div
+  class="card"
+  [class.pressed]="pressed()"
+  (pointerdown)="pointerDown($event)"
+  (pointerup)="cancelPress()"
+  (pointerleave)="cancelPress()"
+  (pointercancel)="cancelPress()"
+  (contextmenu)="contextMenu($event)"
+>
+  <div class="tile"><span class="icon">{{ task().icon }}</span></div>
+  <div class="text">
+    <div class="title">{{ task().title }}</div>
+    @if (task().description) {
+      <div class="description">{{ task().description }}</div>
+    }
+    @if (last(); as last) {
+      <div class="last"><span class="dot" [style.background]="last.color"></span>{{ last.text }}</div>
+    }
+  </div>
+  <button
+    type="button"
+    class="other"
+    [title]="'Für ' + other().displayName + ' eintragen'"
+    [attr.aria-label]="'Von ' + other().displayName + ' erledigt'"
+    (pointerdown)="$event.stopPropagation()"
+    (click)="done.emit(other())"
+  >
+    {{ other().initial }}
+  </button>
+  <button
+    type="button"
+    class="mine"
+    [class.done-me]="justDone() === me().username"
+    [class.done-other]="justDone() === other().username"
+    aria-label="Von mir erledigt"
+    (pointerdown)="$event.stopPropagation()"
+    (click)="done.emit(me())"
+  >
+    <span class="icon">check</span>
+  </button>
+</div>

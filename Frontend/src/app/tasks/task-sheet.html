@@ -1,0 +1,87 @@
+<app-sheet [open]="open()" [label]="task() ? 'Aufgabe bearbeiten' : 'Neue Aufgabe'" (closed)="closed.emit()">
+  <h2 class="sheet-title">{{ task() ? 'Aufgabe bearbeiten' : 'Neue Aufgabe' }}</h2>
+  <form (submit)="$event.preventDefault(); save()">
+    <label class="field">
+      <span class="label">Titel</span>
+      <input
+        name="title"
+        maxlength="100"
+        placeholder="z. B. Wäsche waschen"
+        autocomplete="off"
+        [class.invalid]="titleError()"
+        [value]="title()"
+        (input)="title.set($any($event.target).value)"
+      />
+      @if (titleError()) {
+        <span class="error">Bitte gib einen Titel ein.</span>
+      }
+    </label>
+    <label class="field">
+      <span class="label">Beschreibung <span class="optional">(optional)</span></span>
+      <textarea
+        name="description"
+        rows="2"
+        maxlength="500"
+        placeholder="z. B. Inklusive Aufhängen"
+        [value]="description()"
+        (input)="description.set($any($event.target).value)"
+      ></textarea>
+    </label>
+    <div class="field icons">
+      <span class="label" id="icon-label">Icon</span>
+      <div class="search">
+        <span class="icon">search</span>
+        <input
+          name="iconSearch"
+          type="search"
+          aria-label="Icon suchen"
+          placeholder="Suchen, z. B. Wäsche, Müll, Staubsaugen"
+          autocomplete="off"
+          [value]="query()"
+          (input)="query.set($any($event.target).value)"
+        />
+      </div>
+      <div class="grid" role="radiogroup" aria-labelledby="icon-label">
+        @for (name of icons(); track name) {
+          <button
+            type="button"
+            role="radio"
+            [title]="name"
+            [attr.aria-label]="name"
+            [attr.aria-checked]="name === icon()"
+            [class.selected]="name === icon()"
+            (click)="icon.set(name)"
+          >
+            <span class="icon">{{ name }}</span>
+          </button>
+        }
+      </div>
+      @if (!icons().length) {
+        <p class="no-hits">Keine Treffer für „{{ query() }}“. Versuch einen anderen Begriff.</p>
+      }
+    </div>
+    <div class="actions">
+      @if (task()) {
+        <button type="button" class="delete" (click)="confirmOpen.set(true)">
+          <span class="icon">delete</span>Löschen
+        </button>
+      }
+      <div class="spacer"></div>
+      <button type="button" class="cancel" (click)="closed.emit()">Abbrechen</button>
+      <button type="submit" class="save" [disabled]="busy()">Speichern</button>
+    </div>
+  </form>
+</app-sheet>
+
+@if (confirmOpen()) {
+  <div class="confirm-scrim" (click)="confirmOpen.set(false)"></div>
+  <div class="confirm" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title">
+    <span class="icon">delete</span>
+    <h2 id="confirm-title">„{{ task()?.title }}“ löschen?</h2>
+    <p>{{ deleteText() }}</p>
+    <div class="confirm-actions">
+      <button type="button" class="cancel" (click)="confirmOpen.set(false)">Abbrechen</button>
+      <button type="button" class="danger" [disabled]="busy()" (click)="delete()">Löschen</button>
+    </div>
+  </div>
+}

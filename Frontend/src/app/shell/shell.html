@@ -1,0 +1,37 @@
+<nav class="sidebar" aria-label="Hauptnavigation">
+  <div class="logo">
+    <div class="logo-tile"><span class="icon filled">auto_awesome</span></div>
+    <span class="logo-text">SauberZauber</span>
+  </div>
+  <a class="side-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+    <span class="icon">checklist</span>Aufgaben
+  </a>
+  <a class="side-link" routerLink="/statistik" routerLinkActive="active">
+    <span class="icon">bar_chart</span>Statistik &amp; Aufgaben
+  </a>
+  <div class="spacer"></div>
+  <div class="account">
+    <div class="avatar">{{ household.me()?.initial }}</div>
+    <div class="name">{{ household.me()?.displayName }}</div>
+    <button type="button" class="logout" title="Abmelden" aria-label="Abmelden" (click)="auth.signOut()">
+      <span class="icon">logout</span>
+    </button>
+  </div>
+</nav>
+
+<main>
+  <div class="content">
+    <router-outlet />
+  </div>
+</main>
+
+<nav class="bottom-nav" aria-label="Hauptnavigation">
+  <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+    <span class="pill"><span class="icon">checklist</span></span>Aufgaben
+  </a>
+  <a routerLink="/statistik" routerLinkActive="active">
+    <span class="pill"><span class="icon">bar_chart</span></span>Statistik
+  </a>
+</nav>
+
+<app-snackbar />

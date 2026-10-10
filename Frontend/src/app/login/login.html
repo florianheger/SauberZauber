@@ -1,7 +1,15 @@
 <main>
-  <h1>SauberZauber</h1>
-  <button type="button" (click)="login()" [disabled]="busy()">Mit Passkey anmelden</button>
-  @if (error(); as message) {
-    <p class="error" role="alert">{{ message }}</p>
-  }
+  <div class="brand">
+    <div class="app-tile"><span class="icon filled">auto_awesome</span></div>
+    <h1>SauberZauber</h1>
+    <p class="tagline">Haushalt fair geteilt – ein Tipp, und schon ist’s notiert.</p>
+  </div>
+  <div class="actions">
+    @if (error(); as message) {
+      <p class="error" role="alert"><span class="icon">error</span>{{ message }}</p>
+    }
+    <button type="button" (click)="login()" [disabled]="busy()">
+      <span class="icon">passkey</span>{{ busy() ? 'Einen Moment …' : 'Mit Passkey anmelden' }}
+    </button>
+  </div>
 </main>

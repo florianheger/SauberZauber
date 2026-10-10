@@ -1,0 +1,67 @@
+<header class="page-header">
+  <h1>Statistik &amp; Aufgaben</h1>
+</header>
+
+@let summary = totals();
+<section class="summary">
+  <div class="summary-label">Insgesamt erledigt</div>
+  <div class="summary-counts">
+    @for (total of summary; track total.person.username) {
+      <div class="summary-person" [class.end]="$last">
+        <span class="summary-name">
+          @if (!$last) {
+            <span class="dot" [style.background]="'var(--p' + total.person.slot + ')'"></span>
+          }
+          {{ total.person.displayName }}{{ total.isMe ? ' (du)' : '' }}
+          @if ($last) {
+            <span class="dot" [style.background]="'var(--p' + total.person.slot + ')'"></span>
+          }
+        </span>
+        <span class="summary-count" [style.color]="'var(--p' + total.person.slot + ')'">{{ total.count }}</span>
+      </div>
+    }
+  </div>
+  @let sum = (summary[0]?.count ?? 0) + (summary[1]?.count ?? 0);
+  <div class="split" aria-hidden="true">
+    <div class="p1" [style.flex-grow]="sum ? summary[0].count : 1"></div>
+    <div class="p2" [style.flex-grow]="sum ? summary[1].count : 1"></div>
+  </div>
+  <p class="fairness">{{ fairness() }}</p>
+</section>
+
+<div class="section-header">
+  <h2>Pro Aufgabe</h2>
+  <button type="button" class="new" (click)="openCreate()"><span class="icon">add</span>Neue Aufgabe</button>
+</div>
+
+@if (store.tasks(); as tasks) {
+  @if (tasks.length) {
+    <div class="rows">
+      @for (task of tasks; track task.id) {
+        @let a = count(task, 1);
+        @let b = count(task, 2);
+        <div class="row" (click)="openEdit(task)">
+          <div class="tile"><span class="icon">{{ task.icon }}</span></div>
+          <div class="row-main">
+            <div class="row-title">{{ task.title }}</div>
+            <div class="row-stats">
+              <span class="n p1-text">{{ a }}</span>
+              <div class="mini-split" [class.empty]="!a && !b" aria-hidden="true">
+                <div class="p1" [style.flex-grow]="a"></div>
+                <div class="p2" [style.flex-grow]="b"></div>
+              </div>
+              <span class="n p2-text end">{{ b }}</span>
+            </div>
+          </div>
+          <button type="button" class="edit" aria-label="Bearbeiten" (click)="$event.stopPropagation(); openEdit(task)">
+            <span class="icon">edit</span>
+          </button>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="no-tasks">Noch keine Aufgaben. Mit „Neue Aufgabe“ legst du die erste an.</div>
+  }
+}
+
+<app-task-sheet [open]="sheetOpen()" [task]="editing()" (closed)="sheetOpen.set(false)" />

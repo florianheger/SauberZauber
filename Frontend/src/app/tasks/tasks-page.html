@@ -1,0 +1,64 @@
+@let me = household.me();
+@let other = household.other();
+<header class="page-header">
+  <div class="heading">
+    <span class="greeting">Hallo {{ me?.displayName }}</span>
+    <h1>Aufgaben</h1>
+  </div>
+  <button type="button" class="avatar" aria-label="Konto" (click)="menuOpen.set(!menuOpen())">
+    {{ me?.initial }}
+  </button>
+</header>
+
+@if (store.tasks(); as tasks) {
+  @if (tasks.length && me && other) {
+    <div class="list">
+      @for (task of tasks; track task.id) {
+        <app-task-card
+          [task]="task"
+          [me]="me"
+          [other]="other"
+          [justDone]="justDone()[task.id] ?? null"
+          [pressed]="chooserOpen() && chooserTask()?.id === task.id"
+          (done)="markDone(task, $event)"
+          (longPress)="openChooser(task)"
+        />
+      }
+    </div>
+  } @else if (!tasks.length) {
+    <div class="empty">
+      <div class="empty-tile"><span class="icon filled">auto_awesome</span></div>
+      <h2>Noch keine Aufgaben</h2>
+      <p>Legt unter „Statistik &amp; Aufgaben“ eure erste Aufgabe an. Danach reicht ein Tipp, um sie abzuhaken.</p>
+      <button type="button" (click)="createFirstTask()"><span class="icon">add</span>Erste Aufgabe anlegen</button>
+    </div>
+  }
+}
+
+@if (menuOpen()) {
+  <div class="menu-backdrop" (click)="menuOpen.set(false)"></div>
+  <div class="menu" role="menu">
+    <div class="menu-user">Angemeldet als <strong>{{ me?.displayName }}</strong></div>
+    <button type="button" role="menuitem" (click)="auth.signOut()"><span class="icon">logout</span>Abmelden</button>
+  </div>
+}
+
+<app-sheet
+  size="narrow"
+  label="Wer hat die Aufgabe erledigt?"
+  [open]="chooserOpen()"
+  (closed)="chooserOpen.set(false)"
+>
+  @if (chooserTask(); as task) {
+    <h2 class="chooser-title">Wer hat „{{ task.title }}“ erledigt?</h2>
+    @if (me && other) {
+      <button type="button" class="choice mine" (click)="markDone(task, me)">
+        <span class="choice-avatar">{{ me.initial }}</span>Ich ({{ me.displayName }})
+      </button>
+      <button type="button" class="choice theirs" (click)="markDone(task, other)">
+        <span class="choice-avatar">{{ other.initial }}</span>{{ other.displayName }}
+      </button>
+    }
+    <button type="button" class="cancel" (click)="chooserOpen.set(false)">Abbrechen</button>
+  }
+</app-sheet>

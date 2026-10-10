@@ -22,9 +22,13 @@ describe('authGuard', () => {
     return firstValueFrom(result as Observable<boolean | UrlTree>);
   }
 
-  it('allows navigation when logged in', async () => {
+  it('allows navigation when logged in and loads the household', async () => {
     const result = runGuard();
     httpTesting.expectOne('/api/me').flush({ username: 'alex' });
+    httpTesting.expectOne('/api/users').flush([
+      { username: 'alex', displayName: 'Alex' },
+      { username: 'sam', displayName: 'Sam' },
+    ]);
     expect(await result).toBe(true);
   });
 
