@@ -30,7 +30,7 @@ nginx in the `frontend` container serves the Angular app and proxies `/api/`, th
 Requirements: Docker with Docker Compose.
 
 ```sh
-git clone <repo-url> SauberZauber
+git clone https://github.com/florianheger/SauberZauber.git
 cd SauberZauber
 cp .env.example .env        # adjust if you like, defaults work for localhost
 docker compose up --build
