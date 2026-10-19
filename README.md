@@ -75,6 +75,8 @@ All configuration comes from environment variables in `.env` (see `.env.example`
 | `APP_ORIGIN`        | Exact origin the app is opened from (scheme + host + port)                                   | `https://sauberzauber.example.de`|
 | `APP_PORT`          | Host port the app is published on                                                            | `8080`                           |
 | `APP_REENROLL`      | Optional: user name that gets a fresh enrollment link on next startup                        | `alex`                           |
+| `APP_VAPID_PUBLIC_KEY` / `APP_VAPID_PRIVATE_KEY` | Optional: key pair for push notifications (off while unset)     | from `npx web-push generate-vapid-keys` |
+| `APP_VAPID_SUBJECT` | Contact for the push services, `mailto:` or `https:` (required with the keys)                | `mailto:admin@example.de`        |
 
 > Passkeys are bound to the domain. A passkey registered on `localhost` will not work on your production domain, so set `APP_RP_ID` and `APP_ORIGIN` correctly before enrolling.
 
@@ -103,6 +105,18 @@ SauberZauber is meant to run behind an existing reverse proxy that terminates TL
    }
    ```
 5. Grab the enrollment links (`docker compose logs backend | grep Enrollment`) and register your passkeys.
+
+### Push notifications
+
+Each user can turn on notifications per device (avatar menu on phones, sidebar on desktop) and is notified when the other person marks a task done. To enable the feature, generate a VAPID key pair once and put it in `.env`:
+
+```sh
+npx web-push generate-vapid-keys
+```
+
+Set `APP_VAPID_PUBLIC_KEY`, `APP_VAPID_PRIVATE_KEY` and `APP_VAPID_SUBJECT` (e.g. `mailto:you@example.de`; Apple rejects pushes without a real contact). Keep the keys: changing them invalidates all subscriptions. The backend needs outbound HTTPS to the push services (Apple, Google, Mozilla).
+
+On iPhone and iPad (iOS 16.4+), notifications only work in the installed app: open the site in Safari → Share → "Zum Home-Bildschirm", then turn them on inside the app. On Android, install the app from Firefox or Chrome via "Zum Startbildschirm hinzufügen".
 
 Data lives in the Docker volume `db-data`; back it up (e.g. with `pg_dump`) if you care about your history.
 

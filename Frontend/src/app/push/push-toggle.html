@@ -1,0 +1,18 @@
+@let state = push.state();
+@if (state === 'on' || state === 'off') {
+  <button type="button" role="switch" [attr.aria-checked]="state === 'on'" [disabled]="push.busy()" (click)="toggle()">
+    <span class="icon">notifications</span>
+    <span class="label">Benachrichtigungen</span>
+    <span class="switch"></span>
+  </button>
+} @else if (state === 'install-needed') {
+  <p class="hint">
+    <span class="icon">notifications_off</span>
+    Zum Home-Bildschirm hinzufügen, um Benachrichtigungen zu erhalten
+  </p>
+} @else if (state === 'denied') {
+  <p class="hint">
+    <span class="icon">notifications_off</span>
+    Benachrichtigungen sind in den Einstellungen blockiert
+  </p>
+}

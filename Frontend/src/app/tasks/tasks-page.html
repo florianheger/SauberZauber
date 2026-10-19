@@ -39,6 +39,7 @@
   <div class="menu-backdrop" (click)="menuOpen.set(false)"></div>
   <div class="menu" role="menu">
     <div class="menu-user">Angemeldet als <strong>{{ me?.displayName }}</strong></div>
+    <app-push-toggle />
     <button type="button" role="menuitem" (click)="auth.signOut()"><span class="icon">logout</span>Abmelden</button>
   </div>
 }

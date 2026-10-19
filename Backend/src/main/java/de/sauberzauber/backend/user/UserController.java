@@ -31,7 +31,7 @@ public class UserController {
 			.toList();
 	}
 
-	static String displayName(String username) {
+	public static String displayName(String username) {
 		return username.substring(0, 1).toUpperCase() + username.substring(1);
 	}
 

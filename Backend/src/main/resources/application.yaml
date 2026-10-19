@@ -34,3 +34,9 @@ app:
   rp-id: ${APP_RP_ID:localhost}
   origin: ${APP_ORIGIN:http://localhost:8080}
   reenroll: ${APP_REENROLL:}
+  push:
+    # VAPID key pair for Web Push (base64url, e.g. from `npx web-push generate-vapid-keys`);
+    # notifications are disabled while the keys are unset.
+    public-key: ${APP_VAPID_PUBLIC_KEY:}
+    private-key: ${APP_VAPID_PRIVATE_KEY:}
+    subject: ${APP_VAPID_SUBJECT:}

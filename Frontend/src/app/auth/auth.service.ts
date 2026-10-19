@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { firstValueFrom, Observable, tap } from 'rxjs';
+import { PushService } from '../push/push.service';
 
 export interface Me {
   username: string;
@@ -11,6 +12,7 @@ export interface Me {
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+  private readonly push = inject(PushService);
 
   /** The signed-in user, known once {@link me} has succeeded (e.g. in the route guard). */
   readonly currentUser = signal<Me | null>(null);
@@ -34,6 +36,10 @@ export class AuthService {
   }
 
   async logout(): Promise<void> {
+    // a signed-out device must not receive the next user's notifications
+    if (this.push.state() === 'on') {
+      await this.push.disable().catch(() => undefined);
+    }
     await firstValueFrom(this.http.post('/logout', null));
     this.currentUser.set(null);
   }

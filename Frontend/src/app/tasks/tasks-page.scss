@@ -111,7 +111,7 @@ h1 {
   z-index: 51;
   top: calc(env(safe-area-inset-top) + 84px);
   right: 20px;
-  width: 220px;
+  width: 264px;
   box-sizing: border-box;
   padding: 8px;
   display: flex;
@@ -120,6 +120,8 @@ h1 {
   border: 1px solid var(--line);
   border-radius: 18px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+  gap: 6px;
+  --toggle-bg: var(--surface2);
 
   button {
     height: 48px;

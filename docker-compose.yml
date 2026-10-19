@@ -25,6 +25,9 @@ services:
       APP_RP_ID: ${APP_RP_ID}
       APP_ORIGIN: ${APP_ORIGIN}
       APP_REENROLL: ${APP_REENROLL:-}
+      APP_VAPID_PUBLIC_KEY: ${APP_VAPID_PUBLIC_KEY:-}
+      APP_VAPID_PRIVATE_KEY: ${APP_VAPID_PRIVATE_KEY:-}
+      APP_VAPID_SUBJECT: ${APP_VAPID_SUBJECT:-}
     depends_on:
       db:
         condition: service_healthy

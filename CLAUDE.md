@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-All features from `requirements/` are implemented: login (`Backend/.../auth`, `Frontend/src/app/auth`), tasks and completions (`Backend/.../task`, `Frontend/src/app/tasks`), statistics (`Frontend/src/app/stats`), PWA (service worker, manifest, icons).
+All features from `requirements/` are implemented: login (`Backend/.../auth`, `Frontend/src/app/auth`), tasks and completions (`Backend/.../task`, `Frontend/src/app/tasks`), statistics (`Frontend/src/app/stats`), PWA (service worker, manifest, icons), push notifications (`Backend/.../push`, `Frontend/src/app/push`).
 
 - **UI design source of truth:** `requirements/deisgn/` (Claude Design handoff; note the spelling). `README.md` has the tokens, sizes and behaviour; `SauberZauber App.dc.html` is the clickable prototype. Recreate changes from there pixel-accurately; tokens live in `Frontend/src/styles.scss` (`--p1`/`--p2` = first/second household member, `--me`/`--other` follow `data-me` on the shell).
 
@@ -32,6 +32,7 @@ Treat these documents as the source of truth; read the relevant feature file bef
 A household chore tracker for exactly **one household with two users**. It records who did which task when and how often, so housework can be shared fairly. It is explicitly **not** a scheduler: tasks have no due dates and are always repeating. Do not add multi-household, multi-tenant, or >2-user functionality.
 
 Features:
+- **Notifications**: Web Push to the other user when a task is marked done (see below).
 - **Tasks**: create/edit/delete; title, optional description, Material Symbols icon (icon search must work with German terms).
 - **Task done**: a user can mark a task done for themself *or* for the other user.
 - **Statistics**: separate page showing, per task, how many times each user did it.
@@ -59,9 +60,16 @@ The app is internet-facing, so authentication must use Spring Security's built-i
 
 Required tests: token generation/validation/expiry, enroll endpoint (valid, expired, reused), user bootstrap idempotency, rejection of password/basic login.
 
+## Push notifications
+
+- Web Push without third-party libraries: `push/WebPushCrypto` implements RFC 8291 (`aes128gcm`, checked against the RFC test vector in `WebPushCryptoTest`), `push/WebPushSender` signs VAPID JWTs (RFC 8292) and posts with `java.net.http.HttpClient`. Push is enabled only when `APP_VAPID_PUBLIC_KEY`/`APP_VAPID_PRIVATE_KEY` are set; the subject must be `mailto:`/`https:` (Apple requirement).
+- `push/CompletionNotifier` is called from `TaskController.complete` only (not undo, not count corrections). The recipient is always the user who did not press the button. Sending is asynchronous; 404/410 from the push service deletes the subscription.
+- The payload is shown by Angular's `ngsw-worker.js` (`notification` + `data.onActionClick`) and is also a Declarative Web Push message (`web_push: 8030`, `navigate`) for Safari 18.4+. No custom service worker.
+- Frontend `push/PushService`: `Notification.requestPermission()` must be the first call in the click handler (iOS/Firefox need the user gesture; `SwPush.requestSubscription` alone loses it). iOS only supports push in the home-screen app, so Safari tabs show a hint instead of the switch. Logout removes the device's subscription.
+
 ## Configuration
 
-No secrets in the repo; all config comes from env vars (`APP_USERS`, `APP_RP_ID`, `APP_ORIGIN`, `APP_REENROLL`, DB credentials). Keep things minimal — no admin UI.
+No secrets in the repo; all config comes from env vars (`APP_USERS`, `APP_RP_ID`, `APP_ORIGIN`, `APP_REENROLL`, `APP_VAPID_PUBLIC_KEY`, `APP_VAPID_PRIVATE_KEY`, `APP_VAPID_SUBJECT`, DB credentials). Keep things minimal — no admin UI.
 
 ## Git
 

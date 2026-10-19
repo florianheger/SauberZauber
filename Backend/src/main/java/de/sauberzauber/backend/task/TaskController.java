@@ -5,7 +5,10 @@ import java.util.List;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 
+import de.sauberzauber.backend.push.CompletionNotifier;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,8 +29,11 @@ public class TaskController {
 
 	private final TaskRepository tasks;
 
-	public TaskController(TaskRepository tasks) {
+	private final CompletionNotifier notifier;
+
+	public TaskController(TaskRepository tasks, CompletionNotifier notifier) {
 		this.tasks = tasks;
+		this.notifier = notifier;
 	}
 
 	@GetMapping("/tasks")
@@ -63,12 +69,13 @@ public class TaskController {
 
 	@PostMapping("/tasks/{id}/completions")
 	@ResponseStatus(HttpStatus.CREATED)
-	public TaskRepository.Completion complete(@PathVariable long id, @Valid @RequestBody CompletionRequest request) {
-		if (!this.tasks.exists(id)) {
-			throw notFound();
-		}
-		return this.tasks.addCompletion(id, request.username())
+	public TaskRepository.Completion complete(@PathVariable long id, Authentication authentication,
+			@Valid @RequestBody CompletionRequest request) {
+		String title = this.tasks.findTitle(id).orElseThrow(this::notFound);
+		TaskRepository.Completion completion = this.tasks.addCompletion(id, request.username())
 			.orElseThrow(this::unknownUser);
+		this.notifier.completionAdded(authentication.getName(), request.username(), title, completion.id());
+		return completion;
 	}
 
 	@DeleteMapping("/completions/{id}")

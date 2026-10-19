@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { HouseholdService, Person } from '../household/household.service';
+import { PushToggle } from '../push/push-toggle';
 import { Sheet } from '../shared/sheet';
 import { SnackbarService } from '../shared/snackbar.service';
 import { TaskCard } from './task-card';
@@ -12,7 +13,7 @@ export const ERROR_TEXT = 'Das hat nicht geklappt. Bitte versuch es nochmal.';
 /** Start page: all tasks, each can be marked done with one tap. */
 @Component({
   selector: 'app-tasks-page',
-  imports: [TaskCard, Sheet],
+  imports: [TaskCard, Sheet, PushToggle],
   templateUrl: './tasks-page.html',
   styleUrl: './tasks-page.scss',
 })

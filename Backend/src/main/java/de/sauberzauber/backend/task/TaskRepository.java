@@ -123,8 +123,8 @@ public class TaskRepository {
 		return this.jdbc.sql("delete from task where id = ?").param(id).update() == 1;
 	}
 
-	public boolean exists(long id) {
-		return this.jdbc.sql("select count(*) from task where id = ?").param(id).query(Long.class).single() > 0;
+	public Optional<String> findTitle(long id) {
+		return this.jdbc.sql("select title from task where id = ?").param(id).query(String.class).optional();
 	}
 
 	/** Records a completion; empty if the user does not exist. */

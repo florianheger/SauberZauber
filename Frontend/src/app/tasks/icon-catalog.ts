@@ -69,6 +69,8 @@ export const UI_ICONS = [
   'edit',
   'error',
   'logout',
+  'notifications',
+  'notifications_off',
   'passkey',
   'remove',
   'search',
