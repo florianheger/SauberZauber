@@ -81,6 +81,53 @@ class TaskControllerTest {
 	}
 
 	@Test
+	void updateCorrectsCounts() throws Exception {
+		long id = createId();
+		addCompletion(id, "alex", "2026-01-01T10:00:00Z");
+		addCompletion(id, "alex", "2026-01-02T10:00:00Z");
+		addCompletion(id, "sam", "2026-01-01T12:00:00Z");
+
+		update(id, """
+				{"title": "Müll", "icon": "delete", "counts": {"alex": 1}}""").andExpect(status().isOk())
+			.andExpect(jsonPath("$.counts.alex").value(1))
+			.andExpect(jsonPath("$.counts.sam").value(1))
+			.andExpect(jsonPath("$.lastDone.username").value("sam"));
+
+		update(id, """
+				{"title": "Müll", "icon": "delete", "counts": {"alex": 1, "sam": 3}}""").andExpect(status().isOk())
+			.andExpect(jsonPath("$.counts.alex").value(1))
+			.andExpect(jsonPath("$.counts.sam").value(3));
+
+		update(id, """
+				{"title": "Müll", "icon": "delete"}""").andExpect(status().isOk())
+			.andExpect(jsonPath("$.counts.alex").value(1))
+			.andExpect(jsonPath("$.counts.sam").value(3));
+
+		update(id, """
+				{"title": "Müll", "icon": "delete", "counts": {"alex": 0, "sam": 0}}""").andExpect(status().isOk())
+			.andExpect(jsonPath("$.counts.alex").value(0))
+			.andExpect(jsonPath("$.lastDone").value(nullValue()));
+	}
+
+	@Test
+	void invalidCountsAreRejected() throws Exception {
+		long id = createId();
+		addCompletion(id, "alex", "2026-01-01T10:00:00Z");
+
+		update(id, """
+				{"title": "Müll", "icon": "delete", "counts": {"alex": -1}}""").andExpect(status().isBadRequest());
+		update(id, """
+				{"title": "Müll", "icon": "delete", "counts": {"alex": 100000}}""").andExpect(status().isBadRequest());
+		update(id, """
+				{"title": "Geändert", "icon": "delete", "counts": {"alex": 0, "nobody": 1}}""")
+			.andExpect(status().isBadRequest());
+
+		this.mockMvc.perform(get("/api/tasks").with(user("alex")))
+			.andExpect(jsonPath("$[0].title").value("Müll"))
+			.andExpect(jsonPath("$[0].counts.alex").value(1));
+	}
+
+	@Test
 	void unknownTaskIsNotFound() throws Exception {
 		this.mockMvc.perform(put("/api/tasks/999999").with(user("alex"))
 			.with(csrf())
@@ -104,6 +151,28 @@ class TaskControllerTest {
 	@Test
 	void requiresAuthentication() throws Exception {
 		this.mockMvc.perform(get("/api/tasks")).andExpect(status().isUnauthorized());
+	}
+
+	private long createId() throws Exception {
+		return create("""
+				{"title": "Müll", "icon": "delete"}""").andReturn()
+			.getResponse()
+			.getContentAsString()
+			.transform((json) -> ((Number) JsonPath.read(json, "$.id")).longValue());
+	}
+
+	private void addCompletion(long taskId, String username, String at) {
+		this.jdbc.sql("""
+				insert into completion (task_id, user_id, done_at)
+				select ?, id, ?::timestamptz from app_user where username = ?
+				""").params(taskId, at, username).update();
+	}
+
+	private ResultActions update(long id, String json) throws Exception {
+		return this.mockMvc.perform(put("/api/tasks/" + id).with(user("alex"))
+			.with(csrf())
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(json));
 	}
 
 	private ResultActions create(String json) throws Exception {

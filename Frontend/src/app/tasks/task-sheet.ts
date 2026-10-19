@@ -1,11 +1,12 @@
 import { Component, computed, effect, inject, input, output, signal, untracked } from '@angular/core';
+import { HouseholdService } from '../household/household.service';
 import { Sheet } from '../shared/sheet';
 import { SnackbarService } from '../shared/snackbar.service';
 import { DEFAULT_ICON, searchIcons } from './icon-catalog';
-import { Task, TaskStore } from './task.store';
+import { Task, TaskInput, TaskStore } from './task.store';
 import { ERROR_TEXT } from './tasks-page';
 
-/** Create or edit a task (title, optional description, icon); edit mode can also delete. */
+/** Create or edit a task (title, optional description, icon); edit mode can also correct the counts and delete. */
 @Component({
   selector: 'app-task-sheet',
   imports: [Sheet],
@@ -15,6 +16,7 @@ import { ERROR_TEXT } from './tasks-page';
 export class TaskSheet {
   private readonly store = inject(TaskStore);
   private readonly snackbar = inject(SnackbarService);
+  protected readonly household = inject(HouseholdService);
 
   readonly open = input.required<boolean>();
   /** The task to edit, or null to create a new one. */
@@ -24,6 +26,8 @@ export class TaskSheet {
   protected readonly title = signal('');
   protected readonly description = signal('');
   protected readonly icon = signal(DEFAULT_ICON);
+  /** How often each user did the task, by username (edit mode only). */
+  protected readonly counts = signal<Record<string, number>>({});
   protected readonly query = signal('');
   protected readonly touched = signal(false);
   protected readonly confirmOpen = signal(false);
@@ -47,6 +51,7 @@ export class TaskSheet {
       this.title.set(task?.title ?? '');
       this.description.set(task?.description ?? '');
       this.icon.set(task?.icon ?? DEFAULT_ICON);
+      this.counts.set({ ...task?.counts });
       this.query.set('');
       this.touched.set(false);
       this.confirmOpen.set(false);
@@ -59,11 +64,13 @@ export class TaskSheet {
       this.touched.set(true);
       return;
     }
-    const input = { title, description: this.description().trim() || null, icon: this.icon() };
+    const input: TaskInput = { title, description: this.description().trim() || null, icon: this.icon() };
     const task = this.task();
     await this.run(async () => {
       if (task) {
-        await this.store.update(task.id, input);
+        const counts = this.counts();
+        const changed = Object.keys(counts).some((username) => counts[username] !== task.counts[username]);
+        await this.store.update(task.id, changed ? { ...input, counts } : input);
         this.snackbar.show('Änderungen gespeichert');
       } else {
         await this.store.create(input);
@@ -71,6 +78,10 @@ export class TaskSheet {
       }
       this.closed.emit();
     });
+  }
+
+  protected step(username: string, delta: number): void {
+    this.counts.update((counts) => ({ ...counts, [username]: Math.max(0, (counts[username] ?? 0) + delta) }));
   }
 
   protected async delete(): Promise<void> {

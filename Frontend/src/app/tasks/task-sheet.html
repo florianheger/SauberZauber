@@ -27,6 +27,40 @@
         (input)="description.set($any($event.target).value)"
       ></textarea>
     </label>
+    @if (task()) {
+      <div class="field">
+        <span class="label">Erledigt</span>
+        <div class="counts">
+          @for (person of household.people(); track person.username) {
+            @let count = counts()[person.username] ?? 0;
+            <div class="count-row">
+              <span class="dot" [style.background]="'var(--p' + person.slot + ')'"></span>
+              <span class="name">
+                {{ person.displayName }}{{ person.username === household.me()?.username ? ' (du)' : '' }}
+              </span>
+              <button
+                type="button"
+                class="step"
+                [attr.aria-label]="'Einmal weniger für ' + person.displayName"
+                [disabled]="!count"
+                (click)="step(person.username, -1)"
+              >
+                <span class="icon">remove</span>
+              </button>
+              <span class="count" [style.color]="'var(--p' + person.slot + ')'">{{ count }}</span>
+              <button
+                type="button"
+                class="step"
+                [attr.aria-label]="'Einmal mehr für ' + person.displayName"
+                (click)="step(person.username, 1)"
+              >
+                <span class="icon">add</span>
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+    }
     <div class="field icons">
       <span class="label" id="icon-label">Icon</span>
       <div class="search">

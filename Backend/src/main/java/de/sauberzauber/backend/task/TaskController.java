@@ -44,8 +44,11 @@ public class TaskController {
 
 	@PutMapping("/tasks/{id}")
 	public TaskResponse update(@PathVariable long id, @Valid @RequestBody TaskRequest request) {
-		if (!this.tasks.update(id, request)) {
-			throw notFound();
+		switch (this.tasks.update(id, request)) {
+			case NOT_FOUND -> throw notFound();
+			case UNKNOWN_USER -> throw unknownUser();
+			case UPDATED -> {
+			}
 		}
 		return find(id);
 	}
@@ -65,7 +68,7 @@ public class TaskController {
 			throw notFound();
 		}
 		return this.tasks.addCompletion(id, request.username())
-			.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown user"));
+			.orElseThrow(this::unknownUser);
 	}
 
 	@DeleteMapping("/completions/{id}")
@@ -82,6 +85,10 @@ public class TaskController {
 
 	private ResponseStatusException notFound() {
 		return new ResponseStatusException(HttpStatus.NOT_FOUND);
+	}
+
+	private ResponseStatusException unknownUser() {
+		return new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown user");
 	}
 
 }

@@ -16,6 +16,8 @@ export interface TaskInput {
   title: string;
   description: string | null;
   icon: string;
+  /** On update: corrected completion counts by username (omit to leave them unchanged). */
+  counts?: Record<string, number>;
 }
 
 interface Completion {

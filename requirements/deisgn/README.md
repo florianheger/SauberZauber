@@ -60,6 +60,7 @@ The `.dc.html` files are **design references built in HTML**. They are working p
 - Title „Neue Aufgabe“ / „Aufgabe bearbeiten“ (Bricolage 700 24). Gap between fields 18.
 - **Titel** (required): input 52 tall, radius 14, 1.5px border `--line` (focus `--brand`, error `--danger`), bg `--bg`, 16 px. Placeholder „z. B. Wäsche waschen“. Error text „Bitte gib einen Titel ein.“ on save with an empty title.
 - **Beschreibung (optional):** textarea with 2 rows and the same styling. Placeholder „z. B. Inklusive Aufhängen“.
+- **Erledigt** (edit mode only): one row per person, 52 tall, radius 14, 1.5px border `--line`, bg `--bg`. Each row has a 10 px dot in the person's colour, the name („Alex (du)“), a round 40 px `--surface2` `remove` button (disabled at 0), the count (700 18, person colour, tabular-nums) and an `add` button. On save, lowering a count removes that person's most recent completions and raising it adds completions done now.
 - **Icon:**
   - Search pill 48 tall, radius 24, `--surface2` bg, `search` icon. Placeholder „Suchen, z. B. Wäsche, Müll, Staubsaugen“.
   - Below it a 6-column grid, gap 8, square cells (min 44), radius 14, max-height about 200 px with scroll. The selected cell has a 2px `--brand` border and `--brand-soft` bg.

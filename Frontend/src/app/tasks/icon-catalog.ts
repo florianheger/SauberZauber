@@ -70,6 +70,7 @@ export const UI_ICONS = [
   'error',
   'logout',
   'passkey',
+  'remove',
   'search',
 ] as const;
 

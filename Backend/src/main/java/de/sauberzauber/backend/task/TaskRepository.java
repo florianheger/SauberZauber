@@ -66,10 +66,57 @@ public class TaskRepository {
 			.single();
 	}
 
-	public boolean update(long id, TaskRequest request) {
-		return this.jdbc.sql("update task set title = ?, description = ?, icon = ? where id = ?")
+	public enum UpdateResult {
+
+		UPDATED, NOT_FOUND, UNKNOWN_USER
+
+	}
+
+	/** Updates the task and, if {@code counts} is given, corrects its completions to match. */
+	@Transactional
+	public UpdateResult update(long id, TaskRequest request) {
+		Map<Long, Integer> targets = new HashMap<>();
+		if (request.counts() != null) {
+			for (Map.Entry<String, Integer> entry : request.counts().entrySet()) {
+				Optional<Long> userId = this.jdbc.sql("select id from app_user where username = ?")
+					.param(entry.getKey())
+					.query(Long.class)
+					.optional();
+				if (userId.isEmpty()) {
+					return UpdateResult.UNKNOWN_USER;
+				}
+				targets.put(userId.get(), entry.getValue());
+			}
+		}
+		if (this.jdbc.sql("update task set title = ?, description = ?, icon = ? where id = ?")
 			.params(request.title(), request.description(), request.icon(), id)
-			.update() == 1;
+			.update() != 1) {
+			return UpdateResult.NOT_FOUND;
+		}
+		targets.forEach((userId, target) -> setCount(id, userId, target));
+		return UpdateResult.UPDATED;
+	}
+
+	/** Adds completions (done now) or removes the most recent ones until the user has {@code target}. */
+	private void setCount(long taskId, long userId, int target) {
+		long current = this.jdbc.sql("select count(*) from completion where task_id = ? and user_id = ?")
+			.params(taskId, userId)
+			.query(Long.class)
+			.single();
+		if (target > current) {
+			this.jdbc.sql("insert into completion (task_id, user_id) select ?, ? from generate_series(1, ?)")
+				.params(taskId, userId, (int) (target - current))
+				.update();
+		}
+		else if (target < current) {
+			this.jdbc.sql("""
+					delete from completion where id in (
+						select id from completion where task_id = ? and user_id = ?
+						order by done_at desc, id desc limit ?)
+					""")
+				.params(taskId, userId, (int) (current - target))
+				.update();
+		}
 	}
 
 	public boolean delete(long id) {
