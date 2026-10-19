@@ -1,19 +1,18 @@
 package de.sauberzauber.backend.auth;
 
+import jakarta.servlet.http.Cookie;
+
 import de.sauberzauber.backend.IntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.mock.web.MockHttpSession;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,20 +36,37 @@ class EnrollControllerTest {
 	@Test
 	void validTokenAuthenticatesAndRedirectsToRegistration() throws Exception {
 		String token = this.enrollment.issue("alex");
-		MockHttpSession session = new MockHttpSession();
-		String originalSessionId = session.getId();
 
-		MvcResult result = this.mockMvc.perform(get("/enroll").param("token", token).session(session))
+		Cookie session = this.mockMvc.perform(get("/enroll").param("token", token))
 			.andExpect(status().isFound())
 			.andExpect(redirectedUrl("/webauthn/register"))
-			.andReturn();
+			.andReturn()
+			.getResponse()
+			.getCookie("SESSION");
 
-		MockHttpSession resultSession = (MockHttpSession) result.getRequest().getSession(false);
-		assertThat(resultSession.getId()).isNotEqualTo(originalSessionId);
-		SecurityContext context = (SecurityContext) resultSession
-			.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
-		assertThat(context.getAuthentication().isAuthenticated()).isTrue();
-		assertThat(context.getAuthentication().getName()).isEqualTo("alex");
+		assertThat(session).isNotNull();
+		this.mockMvc.perform(get("/api/me").cookie(session))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.username").value("alex"));
+	}
+
+	@Test
+	void enrollmentChangesTheSessionId() throws Exception {
+		Cookie anonymous = this.mockMvc.perform(get("/webauthn/register"))
+			.andExpect(status().isUnauthorized())
+			.andReturn()
+			.getResponse()
+			.getCookie("SESSION");
+		assertThat(anonymous).isNotNull();
+
+		Cookie session = this.mockMvc.perform(get("/enroll").param("token", this.enrollment.issue("alex")).cookie(anonymous))
+			.andExpect(status().isFound())
+			.andReturn()
+			.getResponse()
+			.getCookie("SESSION");
+
+		assertThat(session.getValue()).isNotEqualTo(anonymous.getValue());
+		this.mockMvc.perform(get("/api/me").cookie(anonymous)).andExpect(status().isUnauthorized());
 	}
 
 	@Test

@@ -5,15 +5,23 @@ spring:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/sauberzauber}
     username: ${SPRING_DATASOURCE_USERNAME:sauberzauber}
     password: ${SPRING_DATASOURCE_PASSWORD:}
+  session:
+    jdbc:
+      # tables are created by Flyway (V4__spring_session.sql)
+      initialize-schema: never
 
 server:
   forward-headers-strategy: native
   tomcat:
     use-relative-redirects: true
   servlet:
+    # Sessions live in Postgres (Spring Session JDBC) and the cookie is persistent, so users
+    # stay logged in across app restarts and redeploys until 90 days of inactivity.
     session:
+      timeout: 90d
       cookie:
         same-site: lax
+        max-age: 90d
 
 management:
   endpoints:
