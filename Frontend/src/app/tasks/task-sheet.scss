@@ -107,14 +107,16 @@ textarea {
   max-height: 196px;
   overflow-y: auto;
   padding: 2px;
+  /* cells size against the grid width; aspect-ratio alone doesn't feed the
+     row track size in WebKit, so rows collapsed and cells overlapped */
+  container-type: inline-size;
 
   @media (min-width: 900px) {
     max-height: 220px;
   }
 
   button {
-    aspect-ratio: 1;
-    min-height: 44px;
+    height: max(44px, calc((100cqw - 5 * 8px) / 6));
     padding: 0;
     border-radius: 14px;
     border: 2px solid transparent;
